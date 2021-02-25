@@ -1,0 +1,136 @@
+image: node:lts
+
+stages:
+  - build
+  - deploy
+  - release
+
+.build:
+  stage: build
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - .next/cache/
+      - node_modules
+  variables:
+    DB_CLIENT: pg
+    DAVIDSDEVEL_TARGET: heroku
+  before_script:
+    - apt-get update
+    - apt-get install -y jq
+    - yarn add pg
+  script:
+    - yarn compile
+    - yarn build:prod
+    - echo "VERSION=v$(cat package.json | jq -r .version)" >> variables.env
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - .next
+      - public
+      - index.dist.js
+      - yarn.lock
+      - package.json
+      - Procfile
+    reports:
+      dotenv: variables.env
+
+build-staging:
+  extends: .build
+  variables:
+    HOST: https://davidsdevel-blog-test.herokuapp.com
+    ENV: staging
+  after_script:
+    - yarn remove sqlite3
+    - 'echo web: node index.js > Procfile'
+    - tar zcv --exclude='.next/cache' -f  master.tgz .next public index.js server.js routes middlewares lib yarn.lock package.json Procfile app.json
+    - node uploadBuild
+  only:
+    - master
+
+
+build-production:
+  extends: .build
+  variables:
+    HOST: https://davidsdevel-blog.herokuapp.com
+    ENV: production
+    SENTRY_ORG: davidsdevel-blog-test
+    SENTRY_PROJECT: davidsdevel-blog-test
+  after_script:
+    - yarn remove sqlite3
+    - tar zcv --exclude='.next/cache' -f master.tgz .next index.dist.js yarn.lock package.json Procfile
+    - node uploadBuild
+  only:
+    - production
+
+staging:
+  stage: deploy
+  needs:
+    - job: build-staging
+      artifacts: true
+  variables:
+    TYPE: staging
+    HEROKU_APP: davidsdevel-blog-test
+    ACCEPT: "Accept: application/vnd.heroku+json; version=3"
+    AUTH: "Authorization: Bearer ${HEROKU_API_KEY}"
+    CONTENT_TYPE: "Content-Type: application/json"
+    BUILD_JSON: '{ "source_blob": {"url": "https://s3.us-south.cloud-object-storage.appdomain.cloud/davidsdevel-storage-cos-standard-y2b/davidsdevel-${TYPE}.tgz","version": "$VERSION"}}'
+  script:
+    - curl -n -X POST https://api.heroku.com/apps/${HEROKU_APP}/builds -d "${BUILD_JSON}" -H "${CONTENT_TYPE}" -H "${ACCEPT}" -H "${AUTH}"
+  environment:
+    name: staging
+    url: https://${HEROKU_APP}.herokuapp.com
+  only:
+    - master
+
+production:
+  extends: staging
+  needs:
+    - job: build-production
+      artifacts: true
+  variables:
+    HEROKU_APP: davidsdevel-blog
+    TYPE: latest
+    SENTRY_VERSION: '{"version": "${VERSION/v/}"}'
+  environment:
+    name: production
+  after_script:
+    - 'curl https://sentry.io/api/hooks/release/builtin/5410236/e0ed8ecb580d6fd8ebee31f724156e2fe3fe5d4fb2ba69014b64c2832e9b948b/ -X POST -H "${CONTENT_TYPE}" -d "${SENTRY_VERSION}"'
+  only:
+    - production
+
+# docker-build:
+#   image: docker:latest
+#   stage: release
+#   needs:
+#     - job: build-production
+#       artifacts: true
+#   services:
+#     - docker:dind
+#   before_script:
+#     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+#   script:
+#     - docker build --no-cache --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" -t "$CI_REGISTRY_IMAGE:latest" .
+#     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+#   only:
+#     - production
+
+# release:
+#   stage: release
+#   image: registry.gitlab.com/gitlab-org/release-cli:latest
+#   rules:
+#     - if: $CI_COMMIT_TAG
+#       when: never
+#     - if: $CI_COMMIT_REF_NAME == 'production'
+#   needs:
+#     - job: build-production
+#       artifacts: true
+#   script:
+#     - echo 'Created using the release-cli https://s3.us-south.cloud-object-storage.appdomain.cloud/davidsdevel-storage-cos-standard-y2b/davidsdevel-${VERSION/v/}.tgz'
+#   release:
+#     name: 'Release $VERSION'
+#     description: 'Created using the release-cli https://s3.us-south.cloud-object-storage.appdomain.cloud/davidsdevel-storage-cos-standard-y2b/davidsdevel-${VERSION/v/}.tgz'
+#     tag_name: '$VERSION'
+#     ref: '$CI_COMMIT_SHA'
+#     milestones:
+#       - 'm1'
