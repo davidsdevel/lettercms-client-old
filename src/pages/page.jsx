@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import NotFound from './404';
 import PageHead from '../components/pageHead';
 import {getOrigin, getSubdomain} from '../lib/utils';
-import sdk from 'LetterCMS';
+import sdk, {Letter} from '@lettercms/sdk';
 
 export default class Page extends Component {
   static async getInitialProps({req, query}) {
@@ -10,9 +10,15 @@ export default class Page extends Component {
     const subdomain = getSubdomain(req);
 
     try {
+      if (req) {
+        const token = req.generateToken(subdomain);
+        subSDK = new Letter(token);
+      } else
+        subSDK = sdk;
+
       let isSubscribe = false;
 
-      const page = await sdk.useSubdomain(subdomain).pages.single(query.url, [
+      const page = await subSDK.pages.single(query.url, [
         'images',
         'content',
         'title',

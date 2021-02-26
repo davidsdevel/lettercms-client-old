@@ -1,17 +1,16 @@
-const sdk = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
-const {Letter} = sdk;
+const {Letter} = require('@lettercms/sdk');
 
 class RenderPost {
-  async urlID(subdomain) {
+  async urlID(sdk) {
     try {
-      const {url} = await sdk.useSubdomain(subdomain).blogs.single(['url']);
+      const {url} = await sdk.blogs.single(['url']);
 
       return Promise.resolve(url);
     } catch(err) {
       return Promise.reject(err);
     }
   }
-  async postOrPage(subdomain, url) {
+  async postOrPage(sdk, subdomain, url) {
     const existsPage = await Letter.existsPage({
       url,
       subdomain
@@ -21,22 +20,17 @@ class RenderPost {
       subdomain
     });
 
-    const {
-      pages,
-      posts
-    } = sdk.useSubdomain(subdomain);
-
     let id;
     let type = null
 
     if (existsPage){
-      const {_id} = await pages.single(url, ['_id']);
+      const {_id} = await sdk.pages.single(url, ['_id']);
 
       type = 'page';
       id = _id;
     }
     else if (existsPost){
-      const {_id} = await posts.single(url, ['_id']);
+      const {_id} = await sdk.posts.single(url, ['_id']);
 
       type = 'post';
       id = _id;
@@ -64,29 +58,32 @@ class RenderPost {
 
       const {subdomain} = req;
 
-      const ID = await this.urlID(subdomain);
+      const token = req.generateToken();
+
+      const sdk = new Letter(token);
+
+      const ID = await this.urlID(sdk);
+
       console.log(ID)
 
       let post;
 
-      const {posts: withSubdomain} = sdk.useSubdomain(subdomain);
-
       switch(ID) {
         case '1':
-          const {type, id} = await this.postOrPage(subdomain, title);
+          const {type, id} = await this.postOrPage(sdk, subdomain, title);
           
           if (type === null)
             return next();
 
           return req.renderApp(req, res, `/${type}`, {ID: id});
         case '2':
-          post = await withSubdomain.single(category, title, ['_id']);
+          post = await sdk.posts.single(category, title, ['_id']);
           break;
         case '3':
-          post = await withSubdomain.single(year, month, title, ['_id']);
+          post = await sdk.posts.single(year, month, title, ['_id']);
           break;
         case '4':
-          post = await withSubdomain.single(year, month, day, title, ['_id']);
+          post = await sdk.posts.single(year, month, day, title, ['_id']);
           break;
       }
 

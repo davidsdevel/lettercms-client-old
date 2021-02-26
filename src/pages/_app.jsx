@@ -10,7 +10,7 @@ import * as Sentry from '@sentry/browser';
 import { RewriteFrames } from '@sentry/integrations';
 import getConfig from 'next/config';
 import {getSubdomain, redirect, getOrigin} from '../lib/utils';
-import sdk from '@lettercms/sdk';
+import sdk, {Letter} from '@lettercms/sdk';
 
 const config = getConfig();
 const distDir = `${config.serverRuntimeConfig.rootDir}/.next`;
@@ -52,8 +52,9 @@ export default class CustomApp extends App {
 
   static async getInitialProps({ Component, ctx }) {
     const subdomain = getSubdomain(ctx.req);
+    const token = req.generateToken(subdomain);
 
-    const existsSubdomain = await sdk.Letter.existsSubdomain(subdomain);
+    const existsSubdomain = await Letter.existsSubdomain(subdomain);
     
     if (!existsSubdomain) {
       return redirect(ctx.req, ctx.res, 'https://www.lettercms.com');
@@ -78,13 +79,13 @@ export default class CustomApp extends App {
 
     referer = referer || origin;
 
-
     return {
       pageProps,
       referer: encodeURI(referer),
       viewUrl: ctx.asPath,
       isSubscribe,
-      subdomain
+      subdomain,
+      token
     };
   }
 
@@ -100,7 +101,7 @@ export default class CustomApp extends App {
 
         const url = splitted[splitted.length - 1]
 
-        await sdk.useSubdomain(subdomain).stats.setView(url, referer);
+        await sdk.stats.setView(url, referer);
       }
     } catch (err) {
       throw new Error(err);
@@ -109,6 +110,8 @@ export default class CustomApp extends App {
 
   async componentDidMount() {
     const userID = localStorage.getItem('userID');
+
+    sdk.setAPIKey(this.props.token);
 
     if (!userID) {
       const {id} = await sdk.users.create();
@@ -128,7 +131,7 @@ export default class CustomApp extends App {
 
       this.setView();
 
-      //window.addEventListener("unload", sdk.stats.endSession();
+      sdk.stats.startTrace();
 
       const html = document.getElementsByTagName('html')[0];
 

@@ -1,5 +1,5 @@
 const Sentry = require('@sentry/node');
-const sdk = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
+const sdk = require('@lettercms/sdk');
 
 // Server
 const express = require('express');
@@ -62,7 +62,8 @@ server
   .use((req, res, next) => {
     req.subdomain = 'davidsdevel';
     req.handle = handle;
-    req.renderApp = app.render;
+    req.renderApp = (req, req, path, query) => app.render(req, res, path, query);
+    req.generatetoken = subdomain  => jwt.sign({subdomain}, 'davidsdevel')
     next();
   });
 
@@ -72,7 +73,10 @@ server
     .get('/:year/:month/:title', (req, res, next) => renderPost.render(req, res, next))
     .get('/:year/:month/:day/:title', (req, res, next) => renderPost.render(req, res, next))
     .all('*', async (req, res) => {
-      const {mainUrl} = await sdk.useSubdomain(req.subdomain).blogs.single(['mainUrl']);
+      const token = req.generatetoken(req.subdomain);
+      const subSDK = new sdk.Letter(token);
+
+      const {mainUrl} = await subSDK.blogs.single(['mainUrl']);
 
       if (req.url === mainUrl)
         return req.renderApp(req, res, '/', {});

@@ -8,7 +8,7 @@ import dynamic from 'next/dynamic';
 import HandleDate from '../lib/handleDate';
 import Banners from '../components/banners';
 import {getOrigin, getSubdomain} from '../lib/utils';
-import sdk from '@lettercms/sdk';
+import sdk, {Letter} from '@lettercms/sdk';
 
 const ErrorPage = dynamic(() => import('./404'))
 const SetBanner = dynamic(() => import('../lib/banners'), {
@@ -24,12 +24,22 @@ class Post extends Component {
       let isSubscribe = false;
       const path = asPath.split('/');
       let author;
+      let subSDK;
+
+      if (req) {
+        const token = req.generateToken(subdomain);
+        subSDK = new Letter(token);
+        isSubscribe = req.session.isSubscribe;
+      }
+      else {
+        subSDK = sdk;
+        isSubscribe = localStorage.getItem('isSubscribe');
+      }
 
       if (!query.isPreview) {
         try {
-          const {posts, accounts} = sdk.useSubdomain(subdomain);
 
-          query = await posts.single(query.ID, [
+          query = await subSDK.posts.single(query.ID, [
             'images',
             'content',
             'title',
@@ -42,7 +52,7 @@ class Post extends Component {
             'authorEmail'
           ]);
 
-          author = await accounts.single(query.authorEmail, [
+          author = await subSDK.accounts.single(query.authorEmail, [
             'name',
             'lastname',
             'description',
@@ -62,8 +72,6 @@ class Post extends Component {
             query = await res.json();
           }
         }
-        if (req) { isSubscribe = req.session.isSubscribe; }
-        else { isSubscribe = localStorage.getItem('isSubscribe'); }
       }
 
       query = {

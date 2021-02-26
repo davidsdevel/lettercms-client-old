@@ -7,7 +7,7 @@ import Card from '../components/index/card';
 import Banners from '../components/banners';
 import dynamic from 'next/dynamic';
 import {getOrigin, getSubdomain} from '../lib/utils';
-import sdk from '@lettercms/sdk';
+import sdk, {Letter} from '@lettercms/sdk';
 import store from '../store';
 import {setBlogData} from '../store/actions';
 
@@ -36,11 +36,21 @@ class Home extends Component {
 
     let data;
     let blogData;
+    let subSDK;
 
-    const {posts: postsSub, blogs} = sdk.useSubdomain(subdomain);
+    if (req) {
+      const token = req.generateToken(subdomain);
+      subSDK = new Letter(token);
+      
+      isSubscribe = req.session.isSubscribe;
+    } else {
+      isSubscribe = localStorage.getItem('isSubscribe');
+      subSDK = sdk;
+    }
+
 
     try {
-      blogData = await blogs.single([
+      blogData = await subSDK.blogs.single([
         'categories',
         'description',
         'title',
@@ -49,7 +59,7 @@ class Home extends Component {
 
       store.dispatch(setBlogData(blogData));
 
-      const { data: posts, next, /*recommended*/ } = await postsSub.all({
+      const { data: posts, next, /*recommended*/ } = await subSDK.posts.all({
         status: 'published',
         fields: [
           'description',
@@ -62,12 +72,7 @@ class Home extends Component {
         ]
       });
 
-      const recommended = posts[0]
-
-      if (req)
-        isSubscribe = req.session.isSubscribe;
-      else
-        isSubscribe = localStorage.getItem('isSubscribe');
+      const recommended = posts[0];
 
       data = {
         posts: posts || [],

@@ -1,13 +1,17 @@
 const router = require('express').Router();
-const sdk = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
+const {Letter} = require('@lettercms/sdk');
 
 router
   .get('/manifest.json', (req, res) => {
-    const {title, description, customDomain} = sdk.useSubdomain(req.subdomain).blogs.single([
-        'description',
-        'title',
-        'customDomain'
-      ]);
+    const token = req.generateToken(req.subdomain);
+
+    const sdk = new Letter(token);
+
+    const {title, description, customDomain} = sdk.blogs.single([
+      'description',
+      'title',
+      'customDomain'
+    ]);
 
     res.json({
       start_url: customDomain || `https://${subdomain}.letterspot.com`,
