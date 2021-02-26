@@ -36,6 +36,18 @@ export default class Page extends Component {
       throw new Error(err);
     }
 	}
+  componentDidMount() {
+    const links = document.getElementsByTagName('a');
+
+    links.forEach(e => {
+      e.onclick = (ev) => {
+        if (e.target !== '_blank') {
+          ev.preventDefault();
+          Router.push(e.href);
+        }
+      }
+    })
+  }
   render({content, title, description, image, pathname}) {
 
     return <div>
