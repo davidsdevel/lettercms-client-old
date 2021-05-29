@@ -77,6 +77,10 @@ class Modal extends Component {
       throw new Error(err);
     }
   }
+  componentWillUnmount() {
+    document.getElementById('firebase-messaging').remove();
+    delete window.Messaging;
+  }
 
   async checkUsername(e) {
     try {

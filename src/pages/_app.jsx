@@ -10,17 +10,19 @@ import * as Sentry from '@sentry/browser';
 import { RewriteFrames } from '@sentry/integrations';
 import getConfig from 'next/config';
 import {getSubdomain, redirect, getOrigin} from '../lib/utils';
-import sdk, {Letter} from '@lettercms/sdk';
+import sdk from '@lettercms/sdk';
 
 const config = getConfig();
 const distDir = `${config.serverRuntimeConfig.rootDir}/.next`;
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 Sentry.init({
-  enabled: process.env.NODE_ENV === 'production',
+  enabled: !isDev,
   dsn: process.env.SENTRY_DSN,
   maxBreadcrumbs: 50,
-  debug: process.env.NODE_ENV === 'production',
-  environment: 'app:browser',
+  debug: isDev,
+  environment: 'client:browser:staging',
   release: process.env.RELEASE,
   integrations: [
     new RewriteFrames({
@@ -52,13 +54,15 @@ export default class CustomApp extends App {
 
   static async getInitialProps({ Component, ctx }) {
     const subdomain = getSubdomain(ctx.req);
-    const token = req.generateToken(subdomain);
 
-    const existsSubdomain = await Letter.existsSubdomain(subdomain);
+    const existsSubdomain = await sdk.Letter.existsSubdomain(subdomain);
     
     if (!existsSubdomain) {
       return redirect(ctx.req, ctx.res, 'https://www.lettercms.com');
     }
+
+    const token = ctx.req.generateToken(subdomain);
+
 
     let pageProps = {};
     let referer;
@@ -111,13 +115,12 @@ export default class CustomApp extends App {
   async componentDidMount() {
     const userID = localStorage.getItem('userID');
 
-    sdk.setAPIKey(this.props.token);
+    sdk.setAccessToken(this.props.token);
 
-    if (!userID) {
+    /*if (!userID) {
       const {id} = await sdk.users.create();
       localStorage.setItem('userID', id);
-    }
-
+    }*/
 
     window.alert = msg => store.dispatch(showAlert(msg));
 
@@ -131,7 +134,7 @@ export default class CustomApp extends App {
 
       this.setView();
 
-      sdk.stats.startTrace();
+      //sdk.stats.startTrace();
 
       const html = document.getElementsByTagName('html')[0];
 

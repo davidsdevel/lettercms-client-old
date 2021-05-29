@@ -2,61 +2,85 @@ const { resolve } = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const {DefinePlugin} = require('webpack');
 
+const firebaseData = JSON.stringify({
+  apiKey: 'AIzaSyAzcg06Z-3ukLDhVkvxM7V0lCNwYTwHpho',
+  authDomain: 'davids-devel-1565378708258.firebaseapp.com',
+  databaseURL: 'https://davids-devel-1565378708258.firebaseio.com',
+  projectId: 'davids-devel-1565378708258',
+  storageBucket: '',
+  messagingSenderId: '167456236988',
+  appId: '1:167456236988:web:0896b0297732acc2'
+});
+
 let definePluginConfig = {
-  'process.env.NODE_ENV': '\'production\'',
-  'process.env.DAVIDSDEVEL_TARGET': '\'' + process.env.DAVIDSDEVEL_TARGET + '\''
+  'process.env.NODE_ENV': '\'production\''
 };
 
-if (process.env.DB_CLIENT) {
-  definePluginConfig['process.env.DB_CLIENT'] = '\'' + process.env.DB_CLIENT + '\'';
-}
-
 module.exports = {
-  entry: resolve(__dirname, 'index.js'),
+  entry: {
+    'firebase-messaging-sw': resolve(__dirname, 'src', 'public', 'firebase-messaging-sw.js'),
+    'offline-sw': resolve(__dirname, 'src', 'public', 'offline-sw.js'),
+  },
   output: {
     filename: 'index.dist.js',
-    path: __dirname,
+    path: resolve(__dirname, 'public'),
     libraryTarget: 'umd',
   },
   optimization: {
-    minimizer: [new TerserPlugin()],
+    minimize: true,
+    minimizer: [new TerserPlugin({
+      cache: path.resolve(__dirname, '.next', 'cache', 'terser-server'),
+      terserOptions: {
+        output: {
+          beautify: false,
+          comments: /# sourceMappingURL/i,
+        },
+        compress: true,
+        mangle: true
+      },
+      extractComments: false
+    })],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.m?js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            presets: ['@babel/preset-env'],
+            plugins: ['@babel/plugin-transform-runtime'],
+            minified: !isDev,
+            sourceMap: isDev,
+            compact: !isDev,
+          }
+        }
+      }
+    ]
   },
   plugins: [
     new DefinePlugin(definePluginConfig)
   ],
   externals: [
+    /@lettercms\/sdk/,
     /@prefresh\/next/,
     /@sentry\/browser/,
     /@sentry\/integrations/,
     /@sentry\/node/,
-    /bcrypt/,
-    /connect-ensure-login/,
-    /connect-session-knex/,
     /express/,
-    /express-fileupload/,
-    /express-ip/,
     /express-session/,
-    /express-ua-middleware/,
     /feed/,
-    /firebase/,
-    /firebase-admin/,
-    /i18n-iso-countries/,
     /isomorphic-fetch/,
-    /jimp/,
-    /knex/,
+    /jsonwebtoken/,
     /next/,
-    /node-mailjet/,
-    /node-schedule/,
-    /passport/,
-    /passport-local/,
     /preact/,
     /preact-render-to-string/,
     /react/,
     /react-dom/,
     /react-ssr-prepass/,
-    /recharts/,
-    /redux/,
-    /xml-js/
+    /redux/
   ],
   mode: 'production',
   target: 'node',

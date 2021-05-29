@@ -3,15 +3,7 @@ const { writeFile } = require('fs');
 const babel = require('@babel/core');
 const Terser = require('terser');
 
-const firebaseData = JSON.stringify({
-  apiKey: 'AIzaSyAzcg06Z-3ukLDhVkvxM7V0lCNwYTwHpho',
-  authDomain: 'davids-devel-1565378708258.firebaseapp.com',
-  databaseURL: 'https://davids-devel-1565378708258.firebaseio.com',
-  projectId: 'davids-devel-1565378708258',
-  storageBucket: "",
-  messagingSenderId: '167456236988',
-  appId: '1:167456236988:web:0896b0297732acc2'
-});
+
 
 
 /*

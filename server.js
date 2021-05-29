@@ -1,5 +1,6 @@
 const Sentry = require('@sentry/node');
 const sdk = require('@lettercms/sdk');
+const jwt = require('jsonwebtoken');
 
 // Server
 const express = require('express');
@@ -9,7 +10,6 @@ const {join} = require('path');
 
 // Express Middlewares
 const session = require('express-session');
-//const KnexSessionStore = require('connect-session-knex')(session);
 
 // Router
 const rootRouter = require('./routes/root');
@@ -25,15 +25,15 @@ const app = nextApp({
 const handle = app.getRequestHandler();
 
 Sentry.init({
-  enabled: process.env.NODE_ENV === 'production',
+  enabled: !dev,
   dsn: process.env.SENTRY_DSN,
   maxBreadcrumbs: 50,
   debug: true,
-  environment: 'app:server',
+  environment: 'client:server:staging',
   release: require('./package.json').version
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const renderPost = new Router();
 
 const sess = {
@@ -52,7 +52,7 @@ if (!dev) {
 
 server
   .use(Sentry.Handlers.requestHandler({
-    user: false,//['email', 'ID'], // default: true = ['id', 'username', 'email']
+    user: false,
     version: false
   }))
   .use(express.json())
@@ -62,8 +62,10 @@ server
   .use((req, res, next) => {
     req.subdomain = 'davidsdevel';
     req.handle = handle;
-    req.renderApp = (req, req, path, query) => app.render(req, res, path, query);
-    req.generatetoken = subdomain  => jwt.sign({subdomain}, 'davidsdevel')
+
+    req.renderApp = (request, response, path, query) => app.render(request, response, path, query);
+    req.generateToken = subdomain  => jwt.sign({subdomain}, 'davidsdevel')
+    
     next();
   });
 
@@ -73,7 +75,7 @@ server
     .get('/:year/:month/:title', (req, res, next) => renderPost.render(req, res, next))
     .get('/:year/:month/:day/:title', (req, res, next) => renderPost.render(req, res, next))
     .all('*', async (req, res) => {
-      const token = req.generatetoken(req.subdomain);
+      const token = req.generateToken(req.subdomain);
       const subSDK = new sdk.Letter(token);
 
       const {mainUrl} = await subSDK.blogs.single(['mainUrl']);

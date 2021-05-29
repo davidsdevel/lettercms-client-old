@@ -1,9 +1,13 @@
 {
-  "name": "@davidsdevel/davidsdevel-blog",
+  "name": "@lettercms/client",
   "license": "Apache",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "engines": {
     "yarn": "1.22.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/lettercms/client.git"
   },
   "scripts": {
     "start": "node index",

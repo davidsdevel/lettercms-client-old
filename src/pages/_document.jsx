@@ -16,6 +16,7 @@ export default class CustomDocument extends Document {
     const toCache = Object.assign([], files, lowPriorityFiles, polyfillFiles, devFiles).filter(e => e).map(e => (`/_next/${e}`));
 
     return (
+
       <Html style={{ scrollBehavior: 'smooth' }} prefix="og: https://ogp.me/ns# fb: https://ogp.me/ns/fb# article: https://ogp.me/ns/article#">
         <Head />
         <body>

@@ -94,14 +94,8 @@ const webpackConfig = {
 
     return config
   },
-  assetPrefix: ENV === 'production'
-    ? 'https://davids-devel-1565378708258.web.app'
-    : '',
+  assetPrefix: process.env.ASSETS,
   env: {
-    AUTH_TOKEN: '3031334e31562e733363723374',
-    ORIGIN: isProd
-      ? process.env.HOST || 'https://davidsdevel-blog-test.herokuapp.com'
-      : 'http://localhost:3000',
     FACEBOOK_APP_ID,
     FACEBOOK_APP_SECRET,
     FIREBASE_APP_ID,

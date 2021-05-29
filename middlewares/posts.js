@@ -58,7 +58,7 @@ class RenderPost {
 
       const {subdomain} = req;
 
-      const token = req.generateToken();
+      const token = req.generateToken(subdomain);
 
       const sdk = new Letter(token);
 

@@ -49,6 +49,8 @@ const PageHead = (props) => {
     <meta content={props.url ? `${props.origin}${props.url}` : defaultOGURL} property="og:url" />
     <meta content={props.url ? `${props.origin}${props.url}` : defaultOGURL} name="twitter:url" />
 
+    <meta href={props.ogImage || defaultOGImage} content={props.ogImage || defaultOGImage} property='og:image' name='twitter:image' itemProp='image' rel="image_src"/>
+
     <link rel="manifest" href="/manifest.json" />
     <script type="application/ld+json" dangerouslySetInnerHTML={{
       __html: `{

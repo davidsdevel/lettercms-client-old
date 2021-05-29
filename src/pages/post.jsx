@@ -8,7 +8,7 @@ import dynamic from 'next/dynamic';
 import HandleDate from '../lib/handleDate';
 import Banners from '../components/banners';
 import {getOrigin, getSubdomain} from '../lib/utils';
-import sdk, {Letter} from '@lettercms/sdk';
+import sdk from '@lettercms/sdk';
 
 const ErrorPage = dynamic(() => import('./404'))
 const SetBanner = dynamic(() => import('../lib/banners'), {
@@ -28,7 +28,7 @@ class Post extends Component {
 
       if (req) {
         const token = req.generateToken(subdomain);
-        subSDK = new Letter(token);
+        subSDK = new sdk.Letter(token);
         isSubscribe = req.session.isSubscribe;
       }
       else {

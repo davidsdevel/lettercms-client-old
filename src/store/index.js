@@ -15,7 +15,6 @@ const blogState = {
   title: '',
   description: '',
   url: ''
-
 };
 
 const alert = (state = { message: '', show: false }, action) => {

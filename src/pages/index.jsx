@@ -7,7 +7,7 @@ import Card from '../components/index/card';
 import Banners from '../components/banners';
 import dynamic from 'next/dynamic';
 import {getOrigin, getSubdomain} from '../lib/utils';
-import sdk, {Letter} from '@lettercms/sdk';
+import sdk from '@lettercms/sdk';
 import store from '../store';
 import {setBlogData} from '../store/actions';
 
@@ -40,14 +40,13 @@ class Home extends Component {
 
     if (req) {
       const token = req.generateToken(subdomain);
-      subSDK = new Letter(token);
+      subSDK = new sdk.Letter(token);
       
       isSubscribe = req.session.isSubscribe;
     } else {
       isSubscribe = localStorage.getItem('isSubscribe');
       subSDK = sdk;
     }
-
 
     try {
       blogData = await subSDK.blogs.single([
@@ -56,8 +55,6 @@ class Home extends Component {
         'title',
         'url'
       ]);
-
-      store.dispatch(setBlogData(blogData));
 
       const { data: posts, next, /*recommended*/ } = await subSDK.posts.all({
         status: 'published',
@@ -97,6 +94,8 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    store.dispatch(setBlogData(this.props.blogData));
+
     if (process.env.NODE_ENV === 'development' || navigator.onLine)
       return;
 
@@ -115,7 +114,7 @@ class Home extends Component {
       isOffline: true,
       prev,
       next,
-      posts: data.slice(page - 10, page),
+      posts: data.slice(page - 10, page)
     });
   }
 

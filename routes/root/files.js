@@ -14,7 +14,7 @@ router
     ]);
 
     res.json({
-      start_url: customDomain || `https://${subdomain}.letterspot.com`,
+      start_url: customDomain || `https://${req.subdomain}.letterspot.com`,
       description,
       icons: [{ src: '/touch-icon.png', sizes: '192x192', type: 'image/png' }],
       name: title,
@@ -28,19 +28,43 @@ router
   })
   .get('/sitemap.xml', (req, res) => req.router.sitemap({ req, res }))
   .get('/robots.txt', (req, res) => {
+    const token = req.generateToken(req.subdomain);
+
+    const sdk = new Letter(token);
+
+    const blog = sdk.blogs.single([
+      'customDomain',
+      'hasCustomRobots',
+      'isVisible',
+      'robots'
+    ]);
+
     res.set({
       'Content-Type': 'text/plain',
     });
-    const robot = `User-agent: *
-Disallow: /privacidad
-Disallow: /terminos
-Disallow: /search
-Disallow: /feed
-Allow: /
 
-Sitemap: https://blog.davidsdevel.com/sitemap.xml`;
+    let robots;
 
-    res.send(robot.replace(/\t/g, ''));
+    if (blog.hasCustomRobots)
+      robots = blog.robots;
+    else {
+      if (blog.isVisible) {
+        robots = `User-agent: *
+          Disallow: /privacidad
+          Disallow: /terminos
+          Disallow: /search
+          Disallow: /feed
+          Allow: /
+
+          Sitemap: https://${customDomain || req.subdomain+'.letterspot.com'}/sitemap.xml`;
+      }
+      else 
+        robots = `User-agent: *
+          Disallow: *`;
+
+    }
+
+    res.send(robot.replace(/\r?\n?\s*/g, ''));
   })
   .get('/feed', (req, res) => req.router.feed({ req, res }));
 

@@ -1,6 +1,4 @@
 const {init} = require('./server');
-
-/*
 const cluster = require('cluster');
 
 const numCPUs = process.env.WEB_CONCURRENCY || 1;
@@ -22,6 +20,3 @@ if (cluster.isMaster) {
 } else {
 	init();
 }
-*/
-
-init();
