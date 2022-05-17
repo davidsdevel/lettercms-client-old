@@ -1,0 +1,66 @@
+{
+  "name": "@lettercms/client",
+  "license": "Apache",
+  "version": "0.1.0",
+  "engines": {
+    "yarn": "1.22.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/lettercms/client.git"
+  },
+  "scripts": {
+    "start": "node index",
+    "start:dev": "node src/compile && node index",
+    "start:test": "set NODE_ENV=production&& node src/compile && next build src/ && node test",
+    "compile": "node src/compile && next build src/",
+    "build:dev": "set NODE_ENV=development&& node src/compile && next build src/",
+    "build:prod": "webpack",
+    "lint": "eslint -c .eslintrc.js .",
+    "test": "jest --runInBand --detectOpenHandles"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "@prefresh/next": "^1.1.0",
+    "@sentry/browser": "^5.22.3",
+    "@sentry/integrations": "^5.22.3",
+    "@sentry/node": "^5.22.3",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "feed": "^4.1.0",
+    "isomorphic-fetch": "^2.2.1",
+    "jsonwebtoken": "^8.5.1",
+    "next": "^9.4.0",
+    "preact": "^10.4.7",
+    "preact-render-to-string": "^5.1.10",
+    "react": "github:preact-compat/react#1.0.0",
+    "react-dom": "github:preact-compat/react-dom#1.0.0",
+    "react-ssr-prepass": "npm:preact-ssr-prepass@^1.0.1",
+    "redux": "^4.0.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-transform-runtime": "^7.11.0",
+    "@babel/preset-env": "^7.10.3",
+    "@sentry/webpack-plugin": "^1.13.0",
+    "@zeit/next-source-maps": "^0.0.3",
+    "babel-loader": "^8.1.0",
+    "dotenv": "^8.2.0",
+    "eslint": "^5.16.0 || ^6.8.0",
+    "eslint-config-airbnb": "latest",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^2.5.0 || ^1.7.0",
+    "ibm-cos-sdk": "^1.7.0",
+    "jest": "^26.0.1",
+    "react-refresh": "^0.8.3",
+    "terser": "^4.8.0",
+    "terser-webpack-plugin": "^4.0.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  },
+  "publishConfig": {
+    "@davidsdevel:registry": "https://gitlab.com/api/v4/projects/20480664/packages/npm/"
+  }
+}
