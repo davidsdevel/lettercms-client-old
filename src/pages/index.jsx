@@ -27,25 +27,20 @@ class Home extends Component {
 
     this.componentDidMount = this.componentDidMount.bind(this);
   }
-  static async getInitialProps({ req, query, res }) {
+  static async getInitialProps({ req, query, res }, {subdomain, token}) {
     const page = query.page || 1;
-    const subdomain = 'davidsdevel'//getSubdomain(req);
+    const subSDK = token ? new sdk.Letter(token) : sdk;
 
     let isSubscribe = false;
     let isOffline = false;
 
     let data;
     let blogData;
-    let subSDK;
 
     if (req) {
-      const token = req.generateToken(subdomain);
-      subSDK = new sdk.Letter(token);
-      
       isSubscribe = req.session.isSubscribe;
     } else {
       isSubscribe = localStorage.getItem('isSubscribe');
-      subSDK = sdk;
     }
 
     try {
@@ -77,10 +72,7 @@ class Home extends Component {
         recommended,
       };
     } catch (err) {
-      throw new Error(err);
-      if (err.toString() === 'TypeError: Failed to fetch') {
-        isOffline = true;
-      }
+      throw err;
     } finally {
 
       return {
@@ -89,6 +81,7 @@ class Home extends Component {
         isSubscribe,
         blogData,
         page,
+        subdomain
       };
     }
   }
@@ -119,8 +112,10 @@ class Home extends Component {
   }
 
   render(_, {
-    isOffline, page, blogData, isSubscribe, posts, next, prev, recommended,
+    isOffline, page, blogData, isSubscribe, posts, next, prev, recommended,subdomain
   }) {
+
+    console.log('Data >', blogData)
 
     return (
       <div>
@@ -148,7 +143,7 @@ class Home extends Component {
                     key={`blog-index-${i}`}
                     title={title}
                     content={description}
-                    url={url}
+                    url={`/${subdomain}${url}`}
                     thumbnail={thumbnail}
                     image={images}
                     comments={comments}

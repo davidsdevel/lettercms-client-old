@@ -1,77 +1,95 @@
 const withPrefresh = require('@prefresh/next');
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
-const withSourceMaps = require('@zeit/next-source-maps')();
+const withSourceMaps = require('@zeit/next-source-maps');
 const SentryWebpackPlugin = require('@sentry/webpack-plugin');
+const {version} = require('../package.json');
 
 const {
   SENTRY_DSN,
   SENTRY_ORG,
   SENTRY_PROJECT,
   SENTRY_AUTH_TOKEN,
-  NODE_ENV,
-  ENV,
-  FACEBOOK_APP_ID,
   FACEBOOK_APP_SECRET,
-  FIREBASE_APP_ID,
-  FIREBASE_PROJECT_ID,
-  FIREBASE_DATABASE_URL,
-  FIREBASE_AUTH_DOMAIN,
-  FIREBASE_API_KEY,
-  FIREBASE_MESSAGING_SENDER_ID
+  FACEBOOK_APP_ID,
+  NODE_ENV,
+  ENV
 } = process.env;
 
 const isProd = NODE_ENV === 'production';
+const basePath = path.join(__dirname, '..');
 
-const webpackConfig = {
+const cfg = {
   webpack(config, { dev, isServer }) {
-      if (!dev) {
-        config.optimization.minimize = true;
 
-        config.optimization.minimizer.push(
-          new TerserPlugin({
-            cache: path.resolve(__dirname, '..', '.next', 'cache', 'terser-minify'),
-            terserOptions: {
-              output: {
-                beautify: false,
-                comments: /# sourceMappingURL/i,
-              },
-              compress: true,
-              mangle: true
+    if (!dev && !isServer) {
+      config.optimization.minimize = true;
+      config.optimization.minimizer.push(
+        new TerserPlugin({
+          cache: path.resolve(__dirname, '..', '.next', 'cache', 'terser-minify'),
+          terserOptions: {
+            output: {
+              beautify: false,
+              comments: /# sourceMappingURL/i,
             },
-            extractComments: false
-          })
-        );
-      }
+            compress: true,
+            mangle: true
+          },
+          extractComments: false
+        })
+      );
+    }
+
+    if (!isServer) {
+      config.module.rules.push({
+        test: /@lettercms\/.*/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: false,
+            presets: ['@babel/preset-env'],
+            plugins: ['@babel/plugin-transform-runtime'],
+            minified: false,
+            sourceMap: false,
+            compact: false
+          }
+        }
+      });
+    }
+
     // Move Preact into the framework chunk instead of duplicating in routes:
-    const splitChunks = config.optimization && config.optimization.splitChunks
+    const splitChunks = config.optimization && config.optimization.splitChunks;
+
     if (splitChunks) {
-      const cacheGroups = splitChunks.cacheGroups
-      const test = /[\\/]node_modules[\\/](preact|preact-render-to-string|preact-context-provider)[\\/]/
+      const {cacheGroups} = splitChunks;
+
+      const test = /[\\/]node_modules[\\/](preact|preact-render-to-string|preact-context-provider)[\\/]/;
+
       if (cacheGroups.framework) {
-        cacheGroups.preact = Object.assign({}, cacheGroups.framework, { test })
+        cacheGroups.preact = Object.assign({}, cacheGroups.framework, { test });
       }
     }
 
     if (isServer) {
       config.externals.push(
         /^(preact|preact-render-to-string|preact-context-provider)([\\/]|$)/
-      )
+      );
       config.resolve.alias['@sentry/browser'] = '@sentry/node';
     }
 
     // Install webpack aliases:
-    const aliases = config.resolve.alias || (config.resolve.alias = {})
+    const aliases = config.resolve.alias || (config.resolve.alias = {});
     aliases.react = aliases['react-dom'] = 'preact/compat';
 
     // Automatically inject Preact DevTools:
     if (dev && !isServer) {
-      const entry = config.entry
+      const entry = config.entry;
       config.entry = () =>
         entry().then((entries) => {
-          entries['main.js'] = ['preact/debug'].concat(entries['main.js'] || [])
-          return entries
-        })
+          entries['main.js'] = ['preact/debug'].concat(entries['main.js'] || []);
+          return entries;
+        });
     }
 
     if (
@@ -87,40 +105,43 @@ const webpackConfig = {
           ignore: ['node_modules'],
           stripPrefix: ['webpack://_N_E/'],
           urlPrefix: `~${basePath}/_next`,
-          release: COMMIT_SHA,
+          release: version,
         })
-      )
+      );
     }
 
-    return config
+    return config;
   },
-  assetPrefix: process.env.ASSETS,
+  assetPrefix: ENV === 'production'
+    ? 'https://davids-devel-1565378708258.web.app'
+    : '',
   env: {
     FACEBOOK_APP_ID,
     FACEBOOK_APP_SECRET,
-    FIREBASE_APP_ID,
-    FIREBASE_MESSAGING_SENDER_ID,
-    FIREBASE_PROJECT_ID,
-    FIREBASE_DATABASE_URL,
-    FIREBASE_AUTH_DOMAIN,
-    FIREBASE_API_KEY,
-    FIREBASE_MESSAGING_SENDER_ID,
+    FIREBASE_CONFIG: `{
+      "apiKey": "AIzaSyAbaJKknzBo2Dy1_wEnU-nie4D4PBMnOxA",
+      "authDomain": "lettercms-1.firebaseapp.com",
+      "databaseURL": "https://lettercms-1-default-rtdb.firebaseio.com",
+      "projectId": "lettercms-1",
+      "storageBucket": "lettercms-1.appspot.com",
+      "messagingSenderId": "665199508384",
+      "appId": "1:665199508384:web:d721315546970a764142c5",
+      "measurementId": "G-S5T194FVV6"
+    }`,
     ENV,
     SENTRY_DSN,
-    RELEASE: require('../package.json').version
+    RELEASE: require('../package.json').version,
   },
-  distDir: '../.next',
-}
+  distDir: isProd ? '../.next' : '../.nextDev'
+};
 
-let final = withPrefresh(webpackConfig);
+let final = withPrefresh(cfg);
 
-if(process.env.ENV === 'production')
-  final = withSourceMaps({
-    ...final,
-    serverRuntimeConfig: {
-      rootDir: path.join(__dirname, '..'),
-    }
-  })
+final = withSourceMaps({
+  ...final,
+  serverRuntimeConfig: {
+    rootDir: basePath,
+  }
+});
 
 module.exports = final;
-

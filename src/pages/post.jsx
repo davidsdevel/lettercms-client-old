@@ -16,25 +16,18 @@ const SetBanner = dynamic(() => import('../lib/banners'), {
 });
 
 class Post extends Component {
-  static async getInitialProps({ query, req, asPath }) {
-    const origin = getOrigin(req);
-    const subdomain = getSubdomain(req);
+  static async getInitialProps({ query, req, asPath }, {origin, subdomain, token}) {
+    const subSDK = token ? new sdk.Letter(token) : sdk;
+    const path = asPath.split('/');
 
     try {
       let isSubscribe = false;
-      const path = asPath.split('/');
       let author;
-      let subSDK;
 
-      if (req) {
-        const token = req.generateToken(subdomain);
-        subSDK = new sdk.Letter(token);
+      if (req)
         isSubscribe = req.session.isSubscribe;
-      }
-      else {
-        subSDK = sdk;
+      else 
         isSubscribe = localStorage.getItem('isSubscribe');
-      }
 
       if (!query.isPreview) {
         try {
@@ -74,17 +67,15 @@ class Post extends Component {
         }
       }
 
-      query = {
+      return {
         ...query,
         pathname: asPath,
         isSubscribe,
         origin,
         author
       };
-
-      return query;
     } catch (err) {
-      throw new Error(err);
+      throw err;
     }
   }
 
@@ -147,14 +138,12 @@ class Post extends Component {
     author
   }) {
 
-    if (status === 'dont-exists') {
-      return <ErrorPage/>
-    }
+    if (status === 'dont-exists')
+      return <ErrorPage/>    
 
     return (
       <div>
         <Head url={pathname} category={category} published={`${updated}`} title={title} tags={tags} images={images} description={description} />
-
         <header>
           <div id="header-shadow">
             <h1>{title}</h1>

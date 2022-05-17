@@ -50,8 +50,6 @@ router
     else {
       if (blog.isVisible) {
         robots = `User-agent: *
-          Disallow: /privacidad
-          Disallow: /terminos
           Disallow: /search
           Disallow: /feed
           Allow: /

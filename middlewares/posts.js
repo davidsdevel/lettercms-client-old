@@ -51,20 +51,31 @@ class RenderPost {
         year
       } = req.params;
 
-      if (/^\/(_next|images|assets)\//.test(req.url))
+      if (/^\/(_next|images|assets|static)\//.test(req.url))
+        return next();
+      if (/.*\.(png|jpe?g|js|svg)/.test(req.url))
+        return next();
+      if (/webpack-hmr/.test(req.url))
         return next();
 
-      console.log(req.url);
-
+        
       const {subdomain} = req;
-
+        
+      console.log(req.url, subdomain);
       const token = req.generateToken(subdomain);
 
       const sdk = new Letter(token);
 
       const ID = await this.urlID(sdk);
 
-      console.log(ID)
+      if (ID !== '4' && year && month && day && title)
+        return res.redirect(302, `/${year}/${month}/${day}/${title}`);
+      if (ID !== '3' && year && month && !day && title)
+        return res.redirect(302, `/${year}/${month}/${title}`);
+      if (ID !== '2' && category && title)
+        return res.redirect(302, `/${category}/${title}`);
+      if (ID !== '1' && !category && !year && !month && !day && title)
+        return res.redirect(302, `/${title}`);
 
       let post;
 

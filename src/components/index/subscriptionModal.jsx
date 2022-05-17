@@ -41,7 +41,10 @@ class Modal extends Component {
     store.subscribe(() => {
       const { show } = store.getState().subscriptionModal;
 
-      if (show) { this.show(); } else { this.hide(); }
+      if (show)
+        this.show();
+      else
+        this.hide();
 
       this.setState({
         show,
@@ -105,7 +108,7 @@ class Modal extends Component {
         step: 1,
       });
     } catch (err) {
-      throw new Error(`Error checking username - ${err}`);
+      throw `Error checking username - ${err}`;
     }
   }
 

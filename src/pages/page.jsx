@@ -6,21 +6,12 @@ import sdk from '@lettercms/sdk';
 import Router from 'next/router';
 
 export default class Page extends Component {
-  static async getInitialProps({req, query, asPath}) {
+  static async getInitialProps({req, query, asPath}, {token}) {
     const origin = getOrigin(req);
     const subdomain = getSubdomain(req);
-
-    let subSDK;
+    const subSDK = token ? new sdk.Letter(token) : sdk;
 
     try {
-      if (req) {
-        const token = req.generateToken(subdomain);
-        subSDK = new sdk.Letter(token);
-      } else
-        subSDK = sdk;
-
-      let isSubscribe = false;
-
       const page = await subSDK.pages.single(query.ID, [
         'images',
         'html',
@@ -37,7 +28,7 @@ export default class Page extends Component {
         hideLayout: true
       };
     } catch (err) {
-      throw new Error(err);
+      throw err;
     }
 	}
   componentDidMount() {

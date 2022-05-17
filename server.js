@@ -1,5 +1,4 @@
 const Sentry = require('@sentry/node');
-const sdk = require('@lettercms/sdk');
 const jwt = require('jsonwebtoken');
 
 // Server
@@ -7,19 +6,21 @@ const express = require('express');
 const server = express();
 const nextApp = require('next');
 const {join} = require('path');
+const conf = require('./src/next.config');
 
 // Express Middlewares
 const session = require('express-session');
 
 // Router
 const rootRouter = require('./routes/root');
-const Router = require('./middlewares/posts');
+const postRouter = require('./routes/post');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = nextApp({
   dev,
   conf: {
-    distDir: '.next',
+    ...conf,
+    distDir: conf.distDir.replace('../', './')
   }
 });
 const handle = app.getRequestHandler();
@@ -34,7 +35,6 @@ Sentry.init({
 });
 
 const PORT = process.env.PORT || 3001;
-const renderPost = new Router();
 
 const sess = {
   secret: 'keyboard cat',
@@ -58,33 +58,16 @@ server
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
   .use(session(sess))
-  .use('/', rootRouter)
-  .use((req, res, next) => {
-    req.subdomain = 'davidsdevel';
+  .use('/:subdomain', (req, res, next) => {
+    req.subdomain = req.params.subdomain;
     req.handle = handle;
 
     req.renderApp = (request, response, path, query) => app.render(request, response, path, query);
     req.generateToken = subdomain  => jwt.sign({subdomain}, 'davidsdevel')
     
     next();
-  });
-
-  server
-    .get('/:title', (req, res, next) => renderPost.render(req, res, next))
-    .get('/:category/:title', (req, res, next) => renderPost.render(req, res, next))
-    .get('/:year/:month/:title', (req, res, next) => renderPost.render(req, res, next))
-    .get('/:year/:month/:day/:title', (req, res, next) => renderPost.render(req, res, next))
-    .all('*', async (req, res) => {
-      const token = req.generateToken(req.subdomain);
-      const subSDK = new sdk.Letter(token);
-
-      const {mainUrl} = await subSDK.blogs.single(['mainUrl']);
-
-      if (req.url === mainUrl)
-        return req.renderApp(req, res, '/', {});
-
-      req.handle(req, res);
-    });
+  }, rootRouter, postRouter)
+  .all('*', (req, res) => req.handle(req, res));
 
   server
     .use(Sentry.Handlers.errorHandler())
@@ -114,12 +97,12 @@ async function initApp() {
 
     server.listen(PORT, err => {
       if (err)
-        throw new Error(err);
+        throw err;
 
       console.log(`> Worker ${process.pid} Listen on Port: ${PORT}`);
     });
   } catch (err) {
-    throw new Error(err);
+    throw err;
   }
 }
 

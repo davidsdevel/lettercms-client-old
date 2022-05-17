@@ -47,41 +47,32 @@ export default class CustomApp extends App {
     this.state = {
       showLoad: false,
     };
-
-    this.paths = [];
-    this.sessionTime = 0;
   }
 
   static async getInitialProps({ Component, ctx }) {
     const subdomain = getSubdomain(ctx.req);
+    const token = ctx.req.generateToken(subdomain);
+    const origin = getOrigin(ctx.req);
+    const isSubscribe = ctx.req.session.isSubscribe || false;
+    const referrer = ctx.req.headers.referer || origin;
 
     const existsSubdomain = await sdk.Letter.existsSubdomain(subdomain);
     
-    if (!existsSubdomain) {
+    if (!existsSubdomain)
       return redirect(ctx.req, ctx.res, 'https://www.lettercms.com');
-    }
-
-    const token = ctx.req.generateToken(subdomain);
-
 
     let pageProps = {};
     let referer;
-    const origin = getOrigin(ctx.req);
 
     if (Component.getInitialProps)
-      pageProps = await Component.getInitialProps(ctx);
-
-    if (ctx.req)
-      referer = ctx.req.headers.referer;
+      pageProps = await Component.getInitialProps(ctx, {
+        subdomain,
+        token,
+        origin
+      });
 
     if (Component.name === 'ErrorPage')
       pageProps.hideLayout = true;
-
-    const isSubscribe = !!ctx.req
-      ? ctx.req.session.isSubscribe
-      : sessionStorage.getItem('isSubscribe');
-
-    referer = referer || origin;
 
     return {
       pageProps,
@@ -98,7 +89,7 @@ export default class CustomApp extends App {
       return;
 
     try {
-      const { viewUrl, referer, subdomain } = this.props;
+      const { viewUrl, referer } = this.props;
 
       if (viewUrl !== '/') {
         const splitted = viewUrl.split('/');
@@ -108,7 +99,7 @@ export default class CustomApp extends App {
         await sdk.stats.setView(url, referer);
       }
     } catch (err) {
-      throw new Error(err);
+      throw err;
     }
   }
 
@@ -125,10 +116,6 @@ export default class CustomApp extends App {
     window.alert = msg => store.dispatch(showAlert(msg));
 
     if (this.props.Component.name !== 'Admin') {
-      if (process.env.NODE_ENV !== 'development') {
-        if ('serviceWorker' in navigator)
-          navigator.serviceWorker.register('/offline-sw.js').then((e) => e.update());
-      }
 
       Facebook.init();
 
