@@ -15,7 +15,7 @@ const ErrorPage = () => (
         <p>Ups. No hay nada por aqui</p>
         <span>
           ¿Te perdiste? Bueno dejame llevarte hasta el
-          <Link href="/"><a> Inicio</a></Link>
+          <Link href="https://lettercms-dashboard-davidsdevel.vercel.app"><a> Inicio</a></Link>
         </span>
       </div>
     </div>

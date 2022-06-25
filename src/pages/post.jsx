@@ -22,12 +22,13 @@ class Post extends Component {
 
     try {
       let isSubscribe = false;
-      let author;
+      let author = null;
+      let blogTitle = null;
 
-      if (req)
+      /*if (req)
         isSubscribe = req.session.isSubscribe;
       else 
-        isSubscribe = localStorage.getItem('isSubscribe');
+        isSubscribe = localStorage.getItem('isSubscribe');*/
 
       if (!query.isPreview) {
         try {
@@ -49,12 +50,18 @@ class Post extends Component {
             'name',
             'lastname',
             'description',
+            'photo',
             'facebook',
             'twitter',
             'instagram',
             'linkedin',
             'website'
           ]);
+
+          const {title} = await subSDK.blogs.single(['title']);
+          blogTitle = title;
+
+          delete query.url;
 
         } catch (err) {
           if (err.toString() === 'TypeError: Failed to fetch') {
@@ -72,7 +79,8 @@ class Post extends Component {
         pathname: asPath,
         isSubscribe,
         origin,
-        author
+        author,
+        blogTitle
       };
     } catch (err) {
       throw err;
@@ -121,29 +129,31 @@ class Post extends Component {
     document.body.appendChild(script);
   }
 
-  render({
-    status,
-    isSubscribe,
-    pathname,
-    images,
-    content,
-    title,
-    tags,
-    updated,
-    description,
-    category,
-    ID,
-    published,
-    origin,
-    author
-  }) {
+  render() {
+    const {
+      status,
+      isSubscribe,
+      pathname,
+      images,
+      content,
+      title,
+      tags,
+      updated,
+      description,
+      category,
+      ID,
+      published,
+      origin,
+      author,
+      blogTitle
+    } = this.props;
 
     if (status === 'dont-exists')
       return <ErrorPage/>    
 
     return (
       <div>
-        <Head url={pathname} category={category} published={`${updated}`} title={title} tags={tags} images={images} description={description} />
+        <Head url={pathname} category={category} published={updated} title={`${title} | ${blogTitle}`} tags={tags} images={images} description={description} />
         <header>
           <div id="header-shadow">
             <h1>{title}</h1>
@@ -151,14 +161,10 @@ class Post extends Component {
           <img src="/images/davidsdevel-rombo.png" />
         </header>
         <div>
-          <div className="banner-container">
-            <SetBanner/>
-          </div>
           <div>
             <span className="publish-date">{HandleDate.getGMTDate(published)}</span>
           </div>
           <main dangerouslySetInnerHTML={{ __html: content }} />
-          <Banners length={3} />
         </div>
         <ul id="tags">
           {tags.map((e) => (
@@ -170,9 +176,6 @@ class Post extends Component {
           ))}
         </ul>
         <Share url={pathname} title={title} isSubscribe={isSubscribe} />
-        <div className="banner-container">
-            <SetBanner/>
-        </div>
         <About {...author}/>
         <h4>Comentarios</h4>
         <div
@@ -189,7 +192,7 @@ class Post extends Component {
         <style jsx>
           {`
         header {
-          background-image: url(${images[0]});
+          background-image: url(${images?.[0] || '/images/privacidad.jpg'});
           height: 600px;
           width: 100%;
           background-position: center;
@@ -215,7 +218,7 @@ class Post extends Component {
           background: rgba(0, 0, 0, .5)
         }
         .publish-date {
-          margin:  0 5% 25px;
+          margin:  2rem 5% 0;
           display: block;
           font-weight: bold;
           font-size: 16px;
@@ -223,7 +226,7 @@ class Post extends Component {
         }
         main {
           padding: 0 5%;
-          margin-bottom: 20px;
+          margin: 2rem 0;
         }
         #tags {
           margin: 0 0 20px;

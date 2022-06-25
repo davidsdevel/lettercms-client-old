@@ -37,7 +37,8 @@ export default class Alert extends Component {
     clearTimeout(this.timeout);
   }
 
-  render(_, { message, show }) {
+  render() {
+    const { message, show } = this.state;
 
     return (
       <div id="alert" style={{ left: show ? 0 : '-100%' }} onMouseOver={this.clearTime} onMouseOut={this.setTime}>

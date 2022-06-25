@@ -77,7 +77,7 @@ class Modal extends Component {
         categories,
       });
     } catch (err) {
-      throw new Error(err);
+      throw err;
     }
   }
   componentWillUnmount() {
@@ -214,7 +214,7 @@ class Modal extends Component {
         setTimeout(() => this.exit(), 1000);
       }
     } catch (err) {
-      throw new Error(err);
+      throw err;
     }
   }
 

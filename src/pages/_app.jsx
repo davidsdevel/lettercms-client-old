@@ -8,12 +8,11 @@ import store from '../store';
 import { showAlert } from '../store/actions';
 import * as Sentry from '@sentry/browser';
 import { RewriteFrames } from '@sentry/integrations';
-import getConfig from 'next/config';
-import {getSubdomain, redirect, getOrigin} from '../lib/utils';
+import {getSubdomain, redirect, getOrigin, generateToken} from '../lib/utils';
 import sdk from '@lettercms/sdk';
-
-const config = getConfig();
-const distDir = `${config.serverRuntimeConfig.rootDir}/.next`;
+import Cookies from 'js-cookie';
+import {parse as cookieParser} from 'cookie';
+import NotFound from './404';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -27,15 +26,17 @@ Sentry.init({
   integrations: [
     new RewriteFrames({
       iteratee: (frame) => {
-        frame.filename = frame.filename.replace(distDir, 'app:///_next')
-        return frame
+        const splitted = frame.filename.split('.next');
+
+        frame.filename = 'app:///_next' + splitted[1];
+        
+        return frame;
       },
     }),
   ],
 });
 
 //Dynamics
-const Modal = dynamic(() => import('../components/index/subscriptionModal'), {ssr: false });
 const Load = dynamic(() => import('../components/loadBar'), {ssr: false });
 const Nav = dynamic(() => import('../components/nav'));
 const Footer = dynamic(() => import('../components/index/footer'));
@@ -49,20 +50,27 @@ export default class CustomApp extends App {
     };
   }
 
-  static async getInitialProps({ Component, ctx }) {
-    const subdomain = getSubdomain(ctx.req);
-    const token = ctx.req.generateToken(subdomain);
-    const origin = getOrigin(ctx.req);
-    const isSubscribe = ctx.req.session.isSubscribe || false;
-    const referrer = ctx.req.headers.referer || origin;
+  static async getInitialProps({Component, ctx}) {
+    if (ctx.asPath === '')
+      return {
+        status: 404
+      };
+
+    const {subdomain} = ctx.query;//getSubdomain(ctx.req);
 
     const existsSubdomain = await sdk.Letter.existsSubdomain(subdomain);
     
     if (!existsSubdomain)
-      return redirect(ctx.req, ctx.res, 'https://www.lettercms.com');
+      return redirect(ctx.req, ctx.res, 'https://lettercms-dashboard-davisdevel.vercel.app');
+
+    const token = generateToken(subdomain);
+    const origin = getOrigin(ctx.req);
+    const isSubscribe = ctx.req?.cookies.isSubscribe || false;
+    const referrer = ctx.req?.headers.referrer || null;
+    const {userID} = cookieParser(ctx.req?.headers.cookie || window.document.cookie);
+
 
     let pageProps = {};
-    let referer;
 
     if (Component.getInitialProps)
       pageProps = await Component.getInitialProps(ctx, {
@@ -76,11 +84,12 @@ export default class CustomApp extends App {
 
     return {
       pageProps,
-      referer: encodeURI(referer),
+      referrer,
       viewUrl: ctx.asPath,
       isSubscribe,
       subdomain,
-      token
+      token,
+      userID
     };
   }
 
@@ -89,14 +98,14 @@ export default class CustomApp extends App {
       return;
 
     try {
-      const { viewUrl, referer } = this.props;
+      const { viewUrl, fererrer } = this.props;
 
-      if (viewUrl !== '/') {
+      if (this.props.viewUrl !== '/') {
         const splitted = viewUrl.split('/');
 
-        const url = splitted[splitted.length - 1]
+        const url =  /(vercel\.app|:3002)\/\w*(\?|$)/.test(window.location.href) ? '/' : splitted[splitted.length - 1];
 
-        await sdk.stats.setView(url, referer);
+        await sdk.stats.setView(url, fererrer);
       }
     } catch (err) {
       throw err;
@@ -104,84 +113,80 @@ export default class CustomApp extends App {
   }
 
   async componentDidMount() {
-    const userID = localStorage.getItem('userID');
+    if (this.props.status === 404)
+      return;
 
     sdk.setAccessToken(this.props.token);
 
-    /*if (!userID) {
-      const {id} = await sdk.users.create();
-      localStorage.setItem('userID', id);
-    }*/
+    if (!this.props.userID) {
+      const {id} = await sdk.createRequest('/user','POST', {
+        device: /Android|iPhone|iPad/.test(navigator.userAgent) ? 'mobile' : 'desktop'
+      });
+
+      Cookies.set('userID', id);
+    }
+
+    this.setView();
+    sdk.stats.startTrace();
 
     window.alert = msg => store.dispatch(showAlert(msg));
 
-    if (this.props.Component.name !== 'Admin') {
+    const html = document.getElementsByTagName('html')[0];
 
-      Facebook.init();
+    Router.events.on('routeChangeStart', () => {
+      html.style.scrollBehavior = '';
 
+      this.setState({
+        showLoad: true,
+      });
+    });
+
+    Router.events.on('routeChangeComplete', () => {
       this.setView();
 
-      //sdk.stats.startTrace();
+      window.scrollTo(0, 0);
+      html.style.scrollBehavior = 'smooth';
 
-      const html = document.getElementsByTagName('html')[0];
-
-      Router.events.on('routeChangeStart', () => {
-        html.style.scrollBehavior = '';
-
-        this.setState({
-          showLoad: true,
-        });
+      this.setState({
+        showLoad: false,
       });
-
-      Router.events.on('routeChangeComplete', () => {
-        Facebook.init();
-        this.setView();
-
-        window.scrollTo(0, 0);
-
-        html.style.scrollBehavior = 'smooth';
-
-        this.setState({
-          showLoad: false,
-        });
-      });
-    }
+    });
   }
 
-  render({Component, pageProps, isSubscribe}, {showLoad}) {
+  render() {
+    const {Component, pageProps, isSubscribe, viewUrl, status} = this.props;
+    const {showLoad} = this.state;
+
+    if (status === 404)
+      return <NotFound/>;
 
     return (
       <div>
         <Head>
-          <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
           {
-            pageProps.next &&
+            pageProps?.next &&
             <link rel="next" />
           }
           {
-            pageProps.prev
+            pageProps?.prev
             && <link rel="prev" />
           }
         </Head>
         {
-          (showLoad && !pageProps.hideLayout)
+          (showLoad && !pageProps?.hideLayout)
           && <Load />
         }
         {
-          !pageProps.hideLayout
+          !pageProps?.hideLayout
           && (
             <div>
               <Nav />
-              {
-                !isSubscribe &&
-                <Modal />
-              }
             </div>
           )
         }
         <Component {...pageProps} />
         {
-          !pageProps.hideLayout
+          !pageProps?.hideLayout
           && <Footer/>
         }
         <Alert />

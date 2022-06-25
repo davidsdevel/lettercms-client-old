@@ -10,7 +10,8 @@ export default class CustomDocument extends Document {
     return { ...initialProps, path };
   }
 
-  render({files, lowPriorityFiles, polyfillFiles, devFiles, pages}) {
+  render() {
+    const {files, lowPriorityFiles, polyfillFiles, devFiles, pages} = this.props;
 
     //const devID = NextScript.contextType[1]._devOnlyInvalidateCacheQueryString;
     const toCache = Object.assign([], files, lowPriorityFiles, polyfillFiles, devFiles).filter(e => e).map(e => (`/_next/${e}`));
@@ -18,7 +19,9 @@ export default class CustomDocument extends Document {
     return (
 
       <Html style={{ scrollBehavior: 'smooth' }} prefix="og: https://ogp.me/ns# fb: https://ogp.me/ns/fb# article: https://ogp.me/ns/article#">
-        <Head />
+        <Head>
+          <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
+        </Head>
         <body>
           <div id="fb-root" />
           <Main />

@@ -1,9 +1,9 @@
-const About = ({name, lastname, description, facebook, twitter, instagram, linkedin}) => {
+const About = ({photo, name, lastname, description, facebook, twitter, instagram, linkedin}) => {
 
   return (
     <div id="about-container">
       <h4>Un poco acerca de mi</h4>
-      <img src="/images/me.jpg" alt={`${name} ${lastname}`} />
+      <img src={photo} alt={`${name} ${lastname}`} />
       <p>{description}</p>
       <div id="social-container">
         {
@@ -51,8 +51,8 @@ const About = ({name, lastname, description, facebook, twitter, instagram, linke
         {`
 			div#about-container {
 				background: #f3f5f7;
-				width: 80%;
-				margin: auto;
+				width: 90%;
+				margin: 2rem auto;
 				padding: 25px 5%;
 				overflow: hidden;
 				border-left: solid 4px #03A9F4;

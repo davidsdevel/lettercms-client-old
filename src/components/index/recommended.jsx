@@ -10,16 +10,16 @@ const Recommended = ({data}) => <div>
   <span style={{ marginLeft: '5%', display: 'block' }}>Te puede interesar</span>
   <div className="banner-container">
     <Card
-      ID={data._id}
-      title={data.title}
+      ID={data.url}
+      title={data.title} 
       content={data.description}
-      url={data.url}
+      url={`/${data.subdomain}${data.fullUrl}`}
       thumbnail={data.thumbnail}
-      image={data.images ? data.images[0] : undefined}
       comments={data.comments}
       category={data.category}
       size="big"
-     />
+      as={data._as}
+    />
     <SetBanner/>
   </div>
 </div>;

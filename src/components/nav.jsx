@@ -161,9 +161,11 @@ class Nav extends Component {
     }
   }
 
-  render(props, {
-    mobileBar, inputBackground, inputStyle, search, menuStyle, shadowStyle, arrowStyle,
-  }) {
+  render() {
+    const {props} = this;
+    const {
+      mobileBar, inputBackground, inputStyle, search, menuStyle, shadowStyle, arrowStyle,
+    } = this.state;
 
     return (
       <nav id="nav">

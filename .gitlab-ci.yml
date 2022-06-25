@@ -1,79 +1,17 @@
 image: node:lts
-
-stages:
-  - build
-  - deploy
-  - release
-
-# Build Stage
-.build:
-  stage: build
-  variables:
-    SENTRY_ORG: davidsdevel-blog-test
-    SENTRY_PROJECT: davidsdevel-blog-test
-  cache:
+cache:
     key: lettercms-client
     paths:
-      - .next/cache/
       - node_modules
-  before_script:
-    - yarn build
-    - yarn lettercms --version
-  script:
-    - tar zcv --exclude='.next/cache' -f  master.tgz .next lib middlewares public routes app.json index.js package.json Procfile server.js yarn.lock
-    - yarn lettercms --upload
-  artifacts:
-    expire_in: 1 day
-    paths:
-      - .next
-      - public
-    reports:
-      dotenv: variables.env
 
-build-staging:
-  extends: .build
-  variables:
-    ENV: staging
-  only:
-    - master
+##### DEFINE STAGES
+stages:
+  - deploy
 
 
-build-production:
-  extends: .build
-  variables:
-    ENV: production
-  only:
-    - production
-
-
-# Deploy Stage
-staging:
+########## App Review Jobs
+review:
   stage: deploy
-  needs:
-    - job: build-staging
-      artifacts: true
-  variables:
-    ENV: staging
   script:
-    - yarn lettercms --deploy
-  environment:
-    name: lettercms-client-staging
-    url: https://lettercms-client-staging.herokuapp.com
-  only:
-    - master
+    npx vercel --name lettercms-client --confirm -t $VERCEL_TOKEN
 
-production:
-  extends: staging
-  needs:
-    - job: build-production
-      artifacts: true
-  variables:
-    ENV: production
-    SENTRY_VERSION: '{"version": "${VERSION/v/}"}'
-  environment:
-    name: lettercms-client
-    url: https://lettercms-client.herokuapp.com
-  after_script:
-    - 'curl https://sentry.io/api/hooks/release/builtin/5410236/e0ed8ecb580d6fd8ebee31f724156e2fe3fe5d4fb2ba69014b64c2832e9b948b/ -X POST -H "${CONTENT_TYPE}" -d "${SENTRY_VERSION}"'
-  only:
-    - production

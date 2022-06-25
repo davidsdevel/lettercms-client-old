@@ -27,21 +27,16 @@ class Home extends Component {
 
     this.componentDidMount = this.componentDidMount.bind(this);
   }
-  static async getInitialProps({ req, query, res }, {subdomain, token}) {
-    const page = query.page || 1;
+  static async getInitialProps(ctx, {subdomain, token}) {
+
+    const page = ctx.query.page || 1;
     const subSDK = token ? new sdk.Letter(token) : sdk;
 
-    let isSubscribe = false;
+    let isSubscribe = ctx.req ? ctx.req?.session?.isSubscribe : localStorage?.getItem('isSubscribe')
     let isOffline = false;
 
     let data;
     let blogData;
-
-    if (req) {
-      isSubscribe = req.session.isSubscribe;
-    } else {
-      isSubscribe = localStorage.getItem('isSubscribe');
-    }
 
     try {
       blogData = await subSDK.blogs.single([
@@ -58,16 +53,39 @@ class Home extends Component {
           'title',
           'images',
           'url',
+          'fullUrl',
           'thumbnail',
           'comments',
           'category'
         ]
       });
 
-      const recommended = posts[0];
+      const parsedPosts = posts.map(e => {
+        let _as = '';
+
+        if (blogData.url === '1')
+          _as = `/post?subdomain=${subdomain}&ID=${e.url}` 
+
+        if (blogData.url === '2')
+          _as = `/post?subdomain=${subdomain}&category=${e.category}&ID=${e.url}` 
+
+        if (blogData.url === '3') {
+          _as = `/post?subdomain=${subdomain}${e.fullUrl.replace('/', '&year=').replace('/', '&month=').replace('/', '&ID=')}` 
+        }
+
+        if (blogData.url === '4')
+          _as = `/post?subdomain=${subdomain}${e.fullUrl.replace('/', '&year=').replace('/', '&month=').replace('/', '&day=').replace('/', '&ID=')}` 
+
+        return {
+          ...e,
+          _as
+        }
+      })
+
+      const recommended = parsedPosts[0];
 
       data = {
-        posts: posts || [],
+        posts: parsedPosts || [],
         next,
         recommended,
       };
@@ -93,7 +111,7 @@ class Home extends Component {
       return;
 
     const page = this.props.page * 1;
-    const next = this.props.next;
+    let next = this.props.next;
 
     let prev = false;
 
@@ -111,11 +129,10 @@ class Home extends Component {
     });
   }
 
-  render(_, {
-    isOffline, page, blogData, isSubscribe, posts, next, prev, recommended,subdomain
-  }) {
-
-    console.log('Data >', blogData)
+  render() {
+    const {
+      isOffline, page, blogData, isSubscribe, posts, next, prev, recommended,subdomain
+    } = this.state;
 
     return (
       <div>
@@ -131,28 +148,27 @@ class Home extends Component {
             {' '}
             {
               !isOffline && (
-                <Recommended data={recommended}/>
+                <Recommended data={{...recommended, subdomain}}/>
               )
             }
             <div id="posts-container">
               <span style={{ marginLeft: '5%', display: 'block' }}>Entradas</span>
               {posts.map(({
-                _id, description, title, images, url, comments, thumbnail
+                _id, description, title, images, url, fullUrl, comments, thumbnail, _as
                 }, i) => (
                   <Card
                     key={`blog-index-${i}`}
                     title={title}
                     content={description}
-                    url={`/${subdomain}${url}`}
+                    url={`/${subdomain}${fullUrl}`}
                     thumbnail={thumbnail}
-                    image={images}
                     comments={comments}
-                    ID={_id}
+                    ID={url}
+                    as={_as}
                   />
                 ))
               }
             </div>
-            <Banners length={posts.length} />
           </div>
         )
         : (
@@ -165,9 +181,6 @@ class Home extends Component {
           { (prev || next) && 
             <Pagination next={next} prev={prev} page={page}/>
           }
-        </div>
-        <div className="banner-container banner-bottom">
-          <SetBanner/>
         </div>
         <style jsx>
           {`

@@ -1,62 +1,10 @@
-const { Feed } = require('feed');
-const {Letter} = require('C:/Users/pc/Documents/Proyectos/letterCMS/davidsdevel-microservices/SDK');
+import {Letter} from '@lettercms/sdk';
+import jwt from 'jsonwebtoken';
+import {getSubdomain} from './utils';
 
-class Router {
-  async sitemap({ req, res }) {
+export default async function feed(req, res) {
     try {
-      const token = req.generateToken(req.subdomain);
-      
-      const sdk = new Letter(token);
-
-      const {customDomain} = await sdk.blogs.single([
-        'customDomain'
-      ]);
-
-      const { data: posts } = await sdk.posts.all({
-        status: 'published',
-        fields: [
-          'updated',
-          'url'
-        ]
-      });
-      const {data: pages} = await sdk.pages.all({
-        status: 'published',
-        fields: [
-          'updated',
-          'url'
-        ]
-      });
-
-      const data = Object.assign([], posts, pages);
-      
-      const domain = customDomain || `https://${req.subdomain}.letterspot.com`;
-
-      const mapped = data.map(({ url, updated }) => `<url><changefreq>monthly</changefreq><loc>https://blog.davidsdevel.com/${url}</loc><lastmod>${updated}</lastmod><priority>1</priority></url>`);
-
-      const finalXML = `<?xml version="1.0" encoding="UTF-8"?>
-      <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-        <url>
-          <loc>${domain}</loc>
-          <changefreq>monthly</changefreq>
-          <priority>1</priority>
-        </url>
-        ${mapped.join('')}
-      </urlset>`;
-
-      res.set({
-        'Content-Type': 'application/xml',
-      });
-
-      res.send(finalXML);
-    } catch (err) {
-      console.error(err);
-      res.status(500).send(err);
-    }
-  }
-
-  async feed({ req, res }) {
-    try {
-      const token = req.generateToken(req.subdomain);
+      const token = jwt.sign({subdomain: getSubdomain(req)}, process.env.JWT_AUTH);
       const sdk = new Letter(token);
 
       const {title, description, customDomain, ownerEmail, thumbnail: blogThumbnail} = await sdk.blogs.single([
@@ -148,6 +96,3 @@ class Router {
       res.status(500).send(err);
     }
   }
-}
-
-module.exports = Router;

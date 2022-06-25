@@ -19,9 +19,11 @@ class Landing extends Component {
     });
   }
 
-  render({ isSubscribe, description }, {clientHeight}) {
+  render() {
+    const { isSubscribe, description } = this.props;
+    const {clientHeight} = this.state;
 
-    return (
+     return (
       <div>
         <header style={{ height: clientHeight }}>
           <div id="header-shadow">
@@ -31,13 +33,9 @@ class Landing extends Component {
             </div>
             <div id='landing-image'>
               <img src="/images/davidsdevel-rombo.png" className='desktop'/>
-              {
-                !isSubscribe
-                && <Subscribe/>
-              }
             </div>
             <div id='landing-scroll'>
-              <button id="circle" onClick={() => { scroll(0, clientHeight - 70); FB.AppEvents.logEvent('Landing Scroll'); }}>
+              <button id="circle" onClick={() => { scroll(0, clientHeight - 70)}}>
                 <img src="/assets/arrow.svg" />
               </button>
             </div>

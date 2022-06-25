@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
-import { string } from 'prop-types';
 import Share from './shareCard';
 
 class Card extends Component {
@@ -98,26 +97,28 @@ class Card extends Component {
     });
   }
 
-  render({
-    image,
-    content,
-    title,
-    url,
-    comments,
-    ID,
-    thumbnail,
-    size
-  }, {
-    savedPostsIDs,
-    isSaving,
-    shareOpacity,
-    shareDisplay
-  }) {
+  render() {
+    const {
+      content,
+      title,
+      url,
+      comments,
+      ID,
+      thumbnail,
+      size
+    } = this.props;
+
+    const {
+      savedPostsIDs,
+      isSaving,
+      shareOpacity,
+      shareDisplay
+    } = this.state;
 
     return (
       <div className="blog-card">
-        <Link href={`/post?ID=${ID}`} as={`/${url}`}>
-          <a onClick={() => FB.AppEvents.logEvent('View Post On Image')}>
+        <Link href={`/post${this.props.as}`} as={url}>
+          <a>
             { !!thumbnail
               ? <div className="card-header-image" style={{ backgroundImage: `url(${image})` }} />
 					  : (
@@ -135,7 +136,8 @@ class Card extends Component {
           }
           <p>{content.length > 200 ? `${content.slice(0, 197)}...` : content}</p>
           <div className="comment-container">
-            {
+          <div/>
+            {/*
 						(savedPostsIDs.indexOf(ID) > -1 && !isSaving)
 						&& <img src="/images/saved.png" />
 					}
@@ -146,14 +148,14 @@ class Card extends Component {
             {
 						isSaving
 						&& <img src="/assets/spinner-black.svg" style={{ animation: 'rotation linear 1s infinite' }} />
-					}
+					*/}
             <div>
               <span>{comments}</span>
               <img src="/assets/bubbles.svg" className="comment-icon" />
             </div>
           </div>
           <div>
-            <button className="view-more" onClick={() => { Router.push(`/post?ID=${ID}`, `/${url}`); FB.AppEvents.logEvent('View Post On Button'); }}>Ver Mas</button>
+            <button className="view-more" onClick={() => Router.push(`/post${this.props.as}`, url)}>Ver Mas</button>
             <button className="share" onFocus={this.toggleShare} onBlur={this.toggleShare}>Compartir</button>
           </div>
           <Share style={{ opacity: shareOpacity, display: shareDisplay }} title={title} url={`https://blog.davidsdevel.com${url}`} />
@@ -264,7 +266,7 @@ class Card extends Component {
 					.blog-card .card-header-image,
 					.blog-card .card-header-title {
 						${this.props.size === 'big'
-						  ? `display: inline-block;
+						  ? `display: flex;
 							width: 100%;height:100%;` : ''
 						}
 					}
@@ -292,12 +294,5 @@ class Card extends Component {
     );
   }
 }
-
-Card.propTypes = {
-  image: string,
-  content: string,
-  title: string,
-  url: string,
-};
 
 export default Card;
