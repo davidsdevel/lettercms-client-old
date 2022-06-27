@@ -19,7 +19,7 @@
     "build:prod": "webpack",
     "lint": "eslint -c .eslintrc.js .",
     "test": "jest --runInBand --detectOpenHandles",
-    "vercel-build": "node src/compile && next build src/"
+    "vercel-build": "next build"
   },
   "main": "index.js",
   "dependencies": {
