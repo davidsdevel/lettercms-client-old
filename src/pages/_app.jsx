@@ -67,7 +67,7 @@ export default class CustomApp extends App {
     const origin = getOrigin(ctx.req);
     const isSubscribe = ctx.req?.cookies.isSubscribe || false;
     const referrer = ctx.req?.headers.referrer || null;
-    const {userID} = cookieParser(ctx.req?.headers.cookie || window?.document.cookie);
+    const {userID} = cookieParser(ctx.req?.headers.cookie);
 
 
     let pageProps = {};
