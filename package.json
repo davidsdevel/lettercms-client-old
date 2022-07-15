@@ -23,7 +23,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "@lettercms/sdk": "^0.0.10",
+    "@lettercms/sdk": "0.0.12",
     "@sentry/browser": "^5.22.3",
     "@sentry/integrations": "^5.22.3",
     "@sentry/node": "^5.22.3",

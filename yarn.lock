@@ -1106,10 +1106,10 @@
     ibm-cos-sdk "^1.11.0"
     yargs "^3.4.5"
 
-"@lettercms/sdk@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@lettercms/sdk/-/sdk-0.0.10.tgz#7510a9841bc1fdce1d1bbb07fa2d0b7f3fe00049"
-  integrity sha512-evBxN6/NNZU3QbtO2YPRvV+jVDeYye2h0g4Np/D/DuBQk/SPqnQAiuCd1yXil8hF7l2Z0e+LXYVwcScilYyGDg==
+"@lettercms/sdk@0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@lettercms/sdk/-/sdk-0.0.12.tgz#da67f0f6d97d2cd8c1080019fc6db26329470c27"
+  integrity sha512-+vkyRQGz5bhV+oKvO2oZ38xu0sPwCuza/M66loJRSSItf4WvHipOupFMuHjl7RZeb872Pb7PKNhuZFYiDWDJTQ==
   dependencies:
     form-data "^3.0.0"
     isomorphic-unfetch "^3.1.0"
