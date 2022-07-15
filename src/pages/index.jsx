@@ -128,7 +128,7 @@ class Home extends Component {
 
   render() {
     const {
-      isOffline, page, blogData, isSubscribe, posts, before, prev, recommended,subdomain
+      isOffline, page, blogData, isSubscribe, posts, before, after, prev, recommended,subdomain
     } = this.state;
 
     return (

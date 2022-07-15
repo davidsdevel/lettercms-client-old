@@ -57,6 +57,7 @@ export default class CustomApp extends App {
       };
 
     const {subdomain} = ctx.query;//getSubdomain(ctx.req);
+    console.log(subdomain)
 
     const existsSubdomain = await sdk.Letter.existsSubdomain(subdomain);
     
@@ -64,6 +65,7 @@ export default class CustomApp extends App {
       return redirect(ctx.req, ctx.res, 'https://lettercms-dashboard-davisdevel.vercel.app');
 
     const token = generateToken(subdomain);
+    console.log(token)
     const origin = getOrigin(ctx.req);
     const isSubscribe = ctx.req?.cookies.isSubscribe || false;
     const referrer = ctx.req?.headers.referrer || null;
