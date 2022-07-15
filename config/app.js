@@ -1,19 +1,7 @@
 const {argv} = require('yargs');
 const {join} = require('path');
 
-const isDev = process.env.NODE_ENV !== 'production'
-
-const sessionConfig = {
-  secret: 'lettercms-client-app',
-  resave: true,
-  saveUninitialized: true,
-  cookie: {
-    maxAge: 3600000 * 24,
-  }
-};
-
-if (!isDev)
-  sessionConfig.cookie.secure = true;
+const isDev = process.env.NODE_ENV !== 'production';
 
 const stage = argv.stage || 'preview';
 

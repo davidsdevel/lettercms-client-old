@@ -12,9 +12,6 @@ import store from '../store';
 import {setBlogData} from '../store/actions';
 
 const Pagination = dynamic(() => import('../components/index/pagination'));
-const SetBanner = dynamic(() => import('../lib/banners'), {
-  ssr: false
-});
 const Recommended = dynamic(() => import('../components/index/recommended'));
 
 class Home extends Component {
@@ -46,7 +43,7 @@ class Home extends Component {
         'url'
       ]);
 
-      const { data: posts, next, /*recommended*/ } = await subSDK.posts.all({
+      const { data: posts, paging: {cursors: {before}}, /*recommended*/ } = await subSDK.posts.all({
         status: 'published',
         fields: [
           'description',
@@ -86,7 +83,7 @@ class Home extends Component {
 
       data = {
         posts: parsedPosts || [],
-        next,
+        before,
         recommended,
       };
     } catch (err) {
@@ -113,25 +110,25 @@ class Home extends Component {
     const page = this.props.page * 1;
     let next = this.props.next;
 
-    let prev = false;
+    let prev = false;/*
 
     const data = JSON.parse(localStorage.getItem('saved-posts'));
 
     if (data[page]) { next = true; }
 
-    if (data[page > 1]) { prev = true; }
+    if (data[page > 1]) { prev = true; }*/
 
     this.setState({
-      isOffline: true,
+      isOffline: true,/*
       prev,
-      next,
+      next,*/
       posts: data.slice(page - 10, page)
     });
   }
 
   render() {
     const {
-      isOffline, page, blogData, isSubscribe, posts, next, prev, recommended,subdomain
+      isOffline, page, blogData, isSubscribe, posts, before, prev, recommended,subdomain
     } = this.state;
 
     return (
@@ -178,8 +175,8 @@ class Home extends Component {
           </div>
         )}
         <div id="pagination-container">
-          { (prev || next) && 
-            <Pagination next={next} prev={prev} page={page}/>
+          { (before || after) && 
+            <Pagination before={before} after={after} actual={actual}/>
           }
         </div>
         <style jsx>

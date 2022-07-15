@@ -21,15 +21,15 @@ Sentry.init({
   dsn: process.env.SENTRY_DSN,
   maxBreadcrumbs: 50,
   debug: isDev,
-  environment: 'client:browser:staging',
+  environment: 'client',
   release: process.env.RELEASE,
   integrations: [
     new RewriteFrames({
       iteratee: (frame) => {
         const splitted = frame.filename.split('.next');
 
-        frame.filename = 'app:///_next' + splitted[1];
-        
+        frame.filename = frame.filename.replace(splitted[0], 'app:///_next');
+
         return frame;
       },
     }),
@@ -51,7 +51,7 @@ export default class CustomApp extends App {
   }
 
   static async getInitialProps({Component, ctx}) {
-    if (ctx.asPath === '')
+    if (ctx.asPath === '/')
       return {
         status: 404
       };
@@ -67,7 +67,7 @@ export default class CustomApp extends App {
     const origin = getOrigin(ctx.req);
     const isSubscribe = ctx.req?.cookies.isSubscribe || false;
     const referrer = ctx.req?.headers.referrer || null;
-    const {userID} = cookieParser(ctx.req?.headers.cookie || window.document.cookie);
+    const {userID} = cookieParser(ctx.req?.headers.cookie || window?.document.cookie);
 
 
     let pageProps = {};
