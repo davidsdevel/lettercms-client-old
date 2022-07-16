@@ -117,7 +117,7 @@ class Card extends Component {
 
     return (
       <div className="blog-card">
-        <Link href={`/post${this.props.as}`} as={url}>
+        <Link href={url}>
           <a>
             { !!thumbnail
               ? <div className="card-header-image" style={{ backgroundImage: `url(${image})` }} />

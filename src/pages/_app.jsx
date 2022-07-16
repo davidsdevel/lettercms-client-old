@@ -57,7 +57,6 @@ export default class CustomApp extends App {
       };
 
     const {subdomain} = ctx.query;//getSubdomain(ctx.req);
-    console.log(subdomain)
 
     const existsSubdomain = await sdk.Letter.existsSubdomain(subdomain);
     
@@ -189,7 +188,7 @@ export default class CustomApp extends App {
         <Component {...pageProps} />
         {
           !pageProps?.hideLayout
-          && <Footer/>
+          && <Footer title={pageProps.blogTitle || pageProps.title}/>
         }
         <Alert />
         <style jsx global>

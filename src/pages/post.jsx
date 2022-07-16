@@ -57,9 +57,11 @@ class Post extends Component {
             'linkedin',
             'website'
           ]);
+          console.log(author)
 
           const {title} = await subSDK.blogs.single(['title']);
           blogTitle = title;
+
 
           delete query.url;
 

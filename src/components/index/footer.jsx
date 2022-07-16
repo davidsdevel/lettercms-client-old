@@ -1,7 +1,4 @@
-import store from '../../store';
-
-const Footer = () => {
-  const {title} = store.getState().blog;
+const Footer = ({title}) => {
 
   return <footer>
     <hr />

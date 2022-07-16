@@ -20,6 +20,8 @@ module.exports.redirect = async (req, res, url) => {
     res.writeHead(307, {
       Location: url
     });
+
+    res.end();
   } else {
     window.location = url;
 
