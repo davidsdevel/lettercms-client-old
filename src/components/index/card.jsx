@@ -32,7 +32,7 @@ class Card extends Component {
         fields: [
           'description',
           'title',
-          'image',
+          'images',
           'url',
           'comments',
           'category',
@@ -43,7 +43,7 @@ class Card extends Component {
       const cache = await caches.open('offline-app');
 
       //TODO: use request Auth
-      await cache.add('/posts/single?ID=${ID}&fields=image,content,title,tags,updated,description,category,ID,description,published');
+      await cache.add('/posts/single?ID=${ID}&fields=images,content,title,tags,updated,description,category,ID,description,published');
 
       savedPosts.push(post);
       ids.push(ID);
@@ -120,7 +120,7 @@ class Card extends Component {
         <Link href={url}>
           <a>
             { !!thumbnail
-              ? <div className="card-header-image" style={{ backgroundImage: `url(${image})` }} />
+              ? <div className="card-header-image" style={{ backgroundImage: `url(${thumbnail})` }} />
 					  : (
               <div className="card-header-title">
                 <h3>{size === 'big'  ? title[0].toUpperCase() : title}</h3>
@@ -155,7 +155,7 @@ class Card extends Component {
             </div>
           </div>
           <div>
-            <button className="view-more" onClick={() => Router.push(`/post${this.props.as}`, url)}>Ver Mas</button>
+            <button className="view-more" onClick={() => Router.push(url)}>Ver Mas</button>
             <button className="share" onFocus={this.toggleShare} onBlur={this.toggleShare}>Compartir</button>
           </div>
           <Share style={{ opacity: shareOpacity, display: shareDisplay }} title={title} url={`https://blog.davidsdevel.com${url}`} />

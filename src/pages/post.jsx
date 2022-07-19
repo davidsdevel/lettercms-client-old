@@ -43,8 +43,10 @@ class Post extends Component {
             'category',
             'description',
             'published',
-            'authorEmail'
+            'authorEmail',
+            'thumbnail'
           ]);
+          console.log(query)
 
           author = await subSDK.accounts.single(query.authorEmail, [
             'name',
@@ -57,11 +59,9 @@ class Post extends Component {
             'linkedin',
             'website'
           ]);
-          console.log(author)
 
           const {title} = await subSDK.blogs.single(['title']);
           blogTitle = title;
-
 
           delete query.url;
 
@@ -147,7 +147,8 @@ class Post extends Component {
       published,
       origin,
       author,
-      blogTitle
+      blogTitle,
+      thumbnail
     } = this.props;
 
     if (status === 'dont-exists')
@@ -194,7 +195,7 @@ class Post extends Component {
         <style jsx>
           {`
         header {
-          background-image: url(${images?.[0] || '/images/privacidad.jpg'});
+          background-image: url(${thumbnail || images?.[0] || '/images/privacidad.jpg'});
           height: 600px;
           width: 100%;
           background-position: center;

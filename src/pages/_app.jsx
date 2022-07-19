@@ -61,10 +61,9 @@ export default class CustomApp extends App {
     const existsSubdomain = await sdk.Letter.existsSubdomain(subdomain);
     
     if (!existsSubdomain)
-      return redirect(ctx.req, ctx.res, 'https://lettercms-dashboard-davisdevel.vercel.app');
+      return redirect(ctx.req, ctx.res, 'https://lettercms-dashboard-davidsdevel.vercel.app');
 
     const token = generateToken(subdomain);
-    console.log(token)
     const origin = getOrigin(ctx.req);
     const isSubscribe = ctx.req?.cookies.isSubscribe || false;
     const referrer = ctx.req?.headers.referrer || null;
@@ -181,14 +180,14 @@ export default class CustomApp extends App {
           !pageProps?.hideLayout
           && (
             <div>
-              <Nav />
+              <Nav subdomain={pageProps.subdomain || pageProps.blogData?.subdomain}/>
             </div>
           )
         }
         <Component {...pageProps} />
         {
           !pageProps?.hideLayout
-          && <Footer title={pageProps.blogTitle || pageProps.title}/>
+          && <Footer title={pageProps.blogTitle || pageProps.blogData?.title}/>
         }
         <Alert />
         <style jsx global>

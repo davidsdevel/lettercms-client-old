@@ -188,13 +188,13 @@ class Nav extends Component {
           </button>
           <img src="/images/davidsdevel-black.png" />
           <li>
-            <Link href="/">
+            <Link href={`/${props.subdomain}`}>
               <a onClick={this.toggleMenu}>Inicio</a>
             </Link>
           </li>
           {links.map(({ key, href, label }) => (
             <li key={key}>
-              <Link href={href}>
+              <Link href={`/${props.subdomain}${href}`}>
                 <a onClick={this.toggleMenu}>{label}</a>
               </Link>
             </li>
