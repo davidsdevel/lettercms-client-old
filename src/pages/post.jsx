@@ -319,11 +319,6 @@ class Post extends Component {
             text-align: left;
           }
         }
-        @media screen and (min-width: 960px) {
-          blockquote {
-            font-size: 24px;
-          }
-        }
       `}
         </style>
       </div>
