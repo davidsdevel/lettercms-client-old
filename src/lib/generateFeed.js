@@ -1,10 +1,12 @@
 import {Letter} from '@lettercms/sdk';
 import jwt from 'jsonwebtoken';
 import {getSubdomain} from './utils';
+import {Feed} from 'feed';
 
 export default async function feed(req, res) {
     try {
-      const token = jwt.sign({subdomain: getSubdomain(req)}, process.env.JWT_AUTH);
+      const subdomain = getSubdomain(req);
+      const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
       const sdk = new Letter(token);
 
       const {title, description, customDomain, ownerEmail, thumbnail: blogThumbnail} = await sdk.blogs.single([
@@ -33,7 +35,7 @@ export default async function feed(req, res) {
         'website'
       ]);
 
-      const domain = customDomain || `https://${req.subdomain}.letterspot.com`;
+      const domain = customDomain || `https://${subdomain}.letterspot.com`;
 
       const feed = new Feed({
         title,
@@ -43,7 +45,7 @@ export default async function feed(req, res) {
         language: 'es',
         image: blogThumbnail,
         favicon: `'${domain}/favicon.ico'`,
-        copyright: 'Todos los derechos reservados 2021, David\'s Devel',
+        copyright: `Todos los derechos reservados ${(new Date()).getFullYear()}, ${title}`,
         updated: new Date(),
         generator: 'LetterCMS',
         feedLinks: {
@@ -57,7 +59,7 @@ export default async function feed(req, res) {
       });
 
       posts.forEach(({
-        title, url, description, content, updated, thumbnail,
+        title, url, description, content, updated, thumbnail, author
       }) => {
         feed.addItem({
           title,
@@ -86,11 +88,10 @@ export default async function feed(req, res) {
 
       const rss = feed.rss2();
 
-      res.set({
-        'Content-Type': 'application/rss+xml; charset=UTF-8',
-      });
+      res.setHeader('Content-Type', 'text/xml; charset=UTF-8');
+      res.write(rss);
 
-      res.send(rss);
+      res.end();
     } catch (err) {
       console.error(err);
       res.status(500).send(err);
