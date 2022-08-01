@@ -17,13 +17,13 @@
     "compile": "node src/compile && next build src/",
     "build:dev": "set NODE_ENV=development&& node src/compile && next build src/",
     "build:prod": "webpack",
-    "lint": "eslint -c .eslintrc.js .",
+    "lint": "next lint",
     "test": "jest --runInBand --detectOpenHandles",
     "vercel-build": "next build"
   },
   "main": "index.js",
   "dependencies": {
-    "@lettercms/sdk": "0.0.12",
+    "@lettercms/sdk": "latest",
     "@sentry/browser": "^5.22.3",
     "@sentry/integrations": "^5.22.3",
     "@sentry/node": "^5.22.3",

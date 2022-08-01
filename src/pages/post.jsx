@@ -46,7 +46,20 @@ class Post extends Component {
             'authorEmail',
             'thumbnail'
           ]);
-          console.log(query)
+
+          if (query.status === 'not-found') {
+            console.log('nf')
+
+            res.writeHead(404, {
+              'Content-Type': 'text/html; charset=utf-8'
+            });
+
+            res.end();
+
+            return {
+              status: 'not-found'
+            }
+          }
 
           author = await subSDK.accounts.single(query.authorEmail, [
             'name',
@@ -151,7 +164,7 @@ class Post extends Component {
       thumbnail
     } = this.props;
 
-    if (status === 'dont-exists')
+    if (status === 'not-found')
       return <ErrorPage/>    
 
     return (
