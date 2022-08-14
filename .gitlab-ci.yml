@@ -14,4 +14,6 @@ review:
   stage: deploy
   script:
     npx vercel --name lettercms-client --confirm -t $VERCEL_TOKEN
+  only:
+    - master
 

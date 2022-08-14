@@ -6,5 +6,7 @@ module.exports = {
   SENTRY_DSN: 'https://12cd4d0b82cf48a199c7739451dc2742@o1179001.ingest.sentry.io/6291299',
   SENTRY_ORG: 'lettercms',
   SENTRY_PROJECT: 'lettercms-dashboard',
-  JWT_AUTH: 'davidsdevel' 
+  JWT_AUTH: 'davidsdevel',
+  DASHBOARD_DOMAIN: process.env.DASHBOARD_DOMAIN,
+  APP_DOMAIN: process.env.APP_DOMAIN,
 }
