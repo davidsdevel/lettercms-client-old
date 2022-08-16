@@ -14,7 +14,7 @@ export async function getUrls() {
 
   const {posts} = modelFactory(mongo, ['posts']);
 
-  const postData = await posts.find({postStatus: 'published'}, 'url subdomain', {lean: true, limit: 100});
+  const postData = await posts.find({postStatus: 'published', subdomain: 'davidsdevel'}, 'url subdomain', {lean: true, limit: 100});
 
   return Promise.resolve(postData.map(e => {
     return {
