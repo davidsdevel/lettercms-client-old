@@ -11,7 +11,6 @@ export async function getUrls() {
     mongo = connection.mongoose;
   }
 
-
   const {posts} = modelFactory(mongo, ['posts']);
 
   const postData = await posts.find({postStatus: 'published', subdomain: 'davidsdevel'}, 'url subdomain', {lean: true, limit: 100});
