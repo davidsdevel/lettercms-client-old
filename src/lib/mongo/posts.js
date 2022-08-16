@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 let mongo = connection.mongoose;
 
-export async function getUrls(subdomain) {
+export async function getUrls() {
     if (!mongo) {
     await connection.connect();
 
@@ -14,7 +14,7 @@ export async function getUrls(subdomain) {
 
   const {posts} = modelFactory(mongo, ['posts']);
 
-  const postData = await posts.find({subdomain, postStatus: 'published'}, 'url subdomain', {lean: true, limit: 10});
+  const postData = await posts.find({postStatus: 'published'}, 'url subdomain', {lean: true, limit: 100});
 
   return Promise.resolve(postData.map(e => {
     return {

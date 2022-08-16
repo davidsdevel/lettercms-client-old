@@ -13,7 +13,7 @@ export async function getSubdomains() {
 
   const {blogs} = modelFactory(mongo, ['blogs']);
 
-  const blogData = await blogs.findOne({subdomain}, 'subdomain', {lean: true});
+  const blogData = await blogs.find({}, 'subdomain', {lean: true});
 
   return Promise.resolve(blogData.map(({subdomain}) => ({params: {subdomain}})));
 }
