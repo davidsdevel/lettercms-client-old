@@ -1,16 +1,13 @@
-import Home from '@/components/index';
+simport Home from '@/components/index';
 import {getRecommended} from '@/lib/mongo/blogs';
 
-export async function getStaticProps({params: {userID}}) {
+export async function getStaticProps({params: {userID, subdomain}}) {
   try {
-      const {blog, posts, notFound} = await getRecommended(userID);
+      const {blog, posts, notFound} = await getRecommended(subdomain, userID);
 
       if (notFound)
         return {
-          redirect: {
-            permanent: true,
-            destination: process.env.DASHBOARD_DOMAIN
-          }
+          notFound: true
         };
 
       return {

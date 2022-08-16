@@ -42,14 +42,14 @@ export async function getBlog(subdomain, page) {
   });
 }
 
-export async function getRecommended(userID) {
+export async function getRecommended(subdomain, userID) {
   if (!mongo) {
     await connection.connect();
 
     mongo = connection.mongoose;
   }
 
-  const {blogs, users: {Ratings}} = modelFactory(mongo, ['blogs', 'ratings']);
+  const {blogs, users: {Ratings}} = modelFactory(mongo, ['blogs', 'ratings', '']);
 
   const blog = await blogs.findOne({subdomain}, 'categories description title url', {lean: true});
 
@@ -69,6 +69,11 @@ export async function getRecommended(userID) {
       rating: -1
     }
   });
+
+  if (postsData.lenght === 0)
+    return Promise.resolve({
+      notFound: true
+    })
 
   return Promise.resolve({
     posts: postsData.map(({post}) => post),
