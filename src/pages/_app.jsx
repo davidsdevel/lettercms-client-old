@@ -35,7 +35,8 @@ Sentry.init({
 
 const CustomApp = ({pageProps, Component}) => {
   const [showLoad, setLoad] = useState(false);
-  const router = useRouter();
+  const router = useRouter(); 
+
   const sdk = new _sdk.Letter(pageProps.accessToken);
 
   function setView() {
@@ -49,15 +50,12 @@ const CustomApp = ({pageProps, Component}) => {
   }
 
   useEffect(() => {
-    console.log(pageProps);
-
     if (!router.query.userID) {
       sdk.createRequest('/user','POST', {
         device: /Android|iPhone|iPad/.test(navigator.userAgent) ? 'mobile' : 'desktop'
       }).then(({id}) => {
         Cookies.set('userID', id);
       });
-
     }
 
     setView();
@@ -70,6 +68,7 @@ const CustomApp = ({pageProps, Component}) => {
 
       setLoad(true);
     });
+
     router.events.on('routeChangeComplete', () => {
       setView();
 
@@ -80,6 +79,10 @@ const CustomApp = ({pageProps, Component}) => {
     });
 
   }, []);
+
+  if (router.isFallback)
+    return <div>Loading</div>;
+  
   return <div>
     <Head>
       {
