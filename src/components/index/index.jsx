@@ -8,6 +8,7 @@ const Recommended = dynamic(() => import('@/components/index/recommended'));
 
 
 const Posts = ({posts}) => {
+
   return <div id="posts-container">
     <span style={{ marginLeft: '5%', display: 'block' }}>Entradas</span>
     {
@@ -28,7 +29,9 @@ const Posts = ({posts}) => {
   </div>
 }
 
-const Home = ({blog, posts}) => {
+const Home = ({data}) => {
+  const {posts, blog} = JSON.parse(data);
+
   return <div>
     <Head title={blog.title} description={blog.description} />
     <Landing isSubscribe={false} description={data.description} />

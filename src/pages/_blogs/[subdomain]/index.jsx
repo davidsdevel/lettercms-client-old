@@ -3,7 +3,7 @@ import {getBlog, getSubdomains} from '@/lib/mongo/blogs';
 
 export async function getStaticProps({params: {subdomain}}) {
   try {
-      const {blog, posts, notFound} = await getBlog(subdomain);
+      const {blog, posts, notFound, accessToken} = await getBlog(subdomain);
 
       if (notFound)
         return {
@@ -15,8 +15,11 @@ export async function getStaticProps({params: {subdomain}}) {
 
       return {
         props: {
-          blog,
-          posts
+          data: JSON.stringify({
+            blog,
+            posts,
+            accessToken
+          })
         }
       };
     } catch (err) {
