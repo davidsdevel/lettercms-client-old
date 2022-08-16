@@ -1,4 +1,4 @@
-simport Home from '@/components/index';
+import Home from '@/components/index';
 import {getRecommended} from '@/lib/mongo/blogs';
 
 export async function getStaticProps({params: {userID, subdomain}}) {

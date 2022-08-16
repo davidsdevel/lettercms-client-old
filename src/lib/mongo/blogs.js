@@ -73,7 +73,7 @@ export async function getRecommended(subdomain, userID) {
   if (postsData.lenght === 0)
     return Promise.resolve({
       notFound: true
-    })
+    });
 
   return Promise.resolve({
     posts: postsData.map(({post}) => post),
