@@ -63,10 +63,11 @@ export async function getPost(subdomain, url, userID) {
       }
     });
 
+  const hasTags = postData.tags && postData.tags?.length > 0;
 
   const similars = await getSimilars(posts, {
     subdomain,
-    tags: postData.tags || [],
+    tags: hasTags && postData.tags,
     actual: postData._id,
     hasRecommend: !!userID
   });
@@ -107,43 +108,40 @@ async function getSimilars(model, {
   actual,
   hasRecommend
 }) {
-  const tagsMapped = tags.map(e => ({tags: {$in: e}}));
-  
-  const similars = await model.find({
-    subdomain,
-    $nor:[{_id: actual}],
-    $or: tagsMapped,
-    postStatus: 'published'
-  },
-  'tags url',
-  {
-    lean: true
-  });
 
-  let ordered = similars.map(e => {
-    let matches = 0;
-    e.tags.forEach(t => {
-      if (tags.includes(t))
-        matches++;
+  let similars = [];
+
+  if (tags) {
+    const tagsMapped = tags.map(e => ({tags: {$in: e}}));
+    const similarsTags = await model.find({
+      subdomain,
+      $nor:[{_id: actual}],
+      $or: tagsMapped,
+      postStatus: 'published'
+    },
+    'title description thumbnail views comments tags url',
+    {
+      lean: true
     });
-    return {
-      matches,
-      _id: e._id
-    }
-  }).sort((a,b) => a.matches > b.matches ? -1 : +1);
 
-  const _similars = [];
-
-  if (ordered.length < 1) {
-    ordered = await model.find({_id: {$ne: actual}, subdomain, postStatus: 'published'}, 'url', {lean: true, sort: {published: -1}, limit: 2});
-  } else if (ordered.length < 2) {
-    ordered[1] = await model.findOne({_id: {$ne: actual}, subdomain, postStatus: 'published'}, 'url', {lean: true, sort: {published: -1}});   
+    similars = similarsTags.map(e => {
+      let matches = 0;
+      e.tags.forEach(t => {
+        if (tags.includes(t))
+          matches++;
+      });
+      return {
+        matches,
+        _id: e._id
+      }
+    }).sort((a,b) => a.matches > b.matches ? -1 : +1).slice(0, 2);
   }
-
-  _similars[0] = await model.findOne({subdomain, url: ordered[0].url}, 'title description thumbnail views comments', {lean: true});
-
-  if (!hasRecommend)
-    _similars[1] = await model.findOne({subdomain, url: ordered[1].url}, 'title description thumbnail views comments', {lean: true});
+  
+  if (similars.length === 0)
+    similars = await model.find({_id: {$ne: actual}, subdomain, postStatus: 'published'}, 'title description thumbnail views comments', {lean: true, sort: {published: -1}, limit: 2});
+  else if (similars.length === 1)
+    similars[1] = await model.findOne({_id: {$ne: actual}, subdomain, postStatus: 'published'}, 'title description thumbnail views comments', {lean: true, sort: {published: -1}});   
+  
 
   return Promise.resolve(_similars);
 }
