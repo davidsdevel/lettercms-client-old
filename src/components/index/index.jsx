@@ -114,3 +114,5 @@ const Home = ({blog, posts}) => {
         </style>
       </div>
 }
+
+export default Home;

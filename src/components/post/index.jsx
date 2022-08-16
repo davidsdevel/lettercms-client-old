@@ -246,3 +246,6 @@ import {useEffect} from 'react';
       </div>
     );
   };
+
+  export default Post;
+  
