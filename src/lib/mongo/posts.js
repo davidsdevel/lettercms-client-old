@@ -84,8 +84,11 @@ export async function getPost(subdomain, url, userID) {
       similar: similar._id
     });
 
-  recommended._id = recommended._id.toString();
-  similar._id = similar._id.toString();
+  if (recommended)
+    recommended._id = recommended._id.toString();
+  if (similar)
+    similar._id = similar._id.toString();
+
   postData._id = postData._id.toString();
   postData.updated = postData.updated.toISOString();
   postData.published = postData.published.toISOString();
