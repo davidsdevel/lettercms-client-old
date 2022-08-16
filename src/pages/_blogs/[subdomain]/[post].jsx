@@ -32,4 +32,13 @@ export async function getStaticProps({params: {subdomain, post}}) {
     }
 }
 
+export async function getStaticPaths() {
+  const paths = await getSubdomains();
+
+  return {
+    paths,
+    fallback: true,
+  };
+};
+
 export default Post;

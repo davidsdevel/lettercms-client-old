@@ -31,5 +31,11 @@ export async function getStaticProps({params: {subdomain, post, userID}}) {
       throw err;
     }
 }
+export async function getStaticPaths() {
 
+  return {
+    paths: [],
+    fallback: true,
+  };
+};
 export default Post;

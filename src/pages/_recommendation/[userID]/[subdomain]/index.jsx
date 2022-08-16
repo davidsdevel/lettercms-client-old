@@ -23,5 +23,12 @@ export async function getStaticProps({params: {userID}}) {
       throw err;
     }
 }
+export async function getStaticPaths() {
+
+  return {
+    paths: [],
+    fallback: true,
+  };
+};
 
 export default Home;

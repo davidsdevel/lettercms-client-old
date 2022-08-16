@@ -1,5 +1,5 @@
 import Home from '@/components/index';
-import {getBlog} from '@/lib/mongo/blogs';
+import {getBlog, getSubdomains} from '@/lib/mongo/blogs';
 
 export async function getStaticProps({params: {subdomain}}) {
   try {
@@ -23,5 +23,13 @@ export async function getStaticProps({params: {subdomain}}) {
       throw err;
     }
 }
+export async function getStaticPaths() {
+  const paths = await getSubdomains();
+
+  return {
+    paths: paths,
+    fallback: true,
+  };
+};
 
 export default Home;
