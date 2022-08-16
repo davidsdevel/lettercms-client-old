@@ -1,3 +1,3 @@
-import generateSitemap from '../../lib/generateSitemap'
+import generateSitemap from '../../lib/generateSitemap';
 
 export default generateSitemap;

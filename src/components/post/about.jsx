@@ -11,7 +11,7 @@ const About = ({photo, name, lastname, description, facebook, twitter, instagram
           <a
             href={facebook}
             target="_blank"
-            onClick={() => FB.AppEvents.logEvent('View Profile on Facebook')}
+            onClick={() => FB.AppEvents.logEvent('View Profile on Facebook')} rel="noreferrer"
           >
             <img src="/assets/facebook.svg" />
           </a>
@@ -21,7 +21,7 @@ const About = ({photo, name, lastname, description, facebook, twitter, instagram
           <a
             href={twitter}
             target="_blank"
-            onClick={() => FB.AppEvents.logEvent('View Profile on Twitter')}
+            onClick={() => FB.AppEvents.logEvent('View Profile on Twitter')} rel="noreferrer"
           >
             <img src="/assets/twitter.svg" />
           </a>
@@ -31,7 +31,7 @@ const About = ({photo, name, lastname, description, facebook, twitter, instagram
           <a
             href={linkedin}
             target="_blank"
-            onClick={() => FB.AppEvents.logEvent('View Profile on LinkedIn')}
+            onClick={() => FB.AppEvents.logEvent('View Profile on LinkedIn')} rel="noreferrer"
           >
             <img src="/assets/linkedin.svg" />
           </a>
@@ -41,7 +41,7 @@ const About = ({photo, name, lastname, description, facebook, twitter, instagram
           <a
             href={instagram}
             target="_blank"
-            onClick={() => FB.AppEvents.logEvent('View Profile on Instagram')}
+            onClick={() => FB.AppEvents.logEvent('View Profile on Instagram')} rel="noreferrer"
           >
             <img src="/assets/instagram.svg" />
           </a>

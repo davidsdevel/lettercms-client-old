@@ -1,6 +1,6 @@
 import {Letter} from '@lettercms/sdk';
 import jwt from 'jsonwebtoken';
-import {getSubdomain} from '../../lib/utils';
+import {getSubdomain} from '@/lib/utils';
 
 export default function Robots(req, res) {
   const subdomain = getSubdomain(req);

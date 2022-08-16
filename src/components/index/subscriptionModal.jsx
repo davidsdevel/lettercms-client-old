@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import Head from "next/head";
-import { bool } from 'prop-types';
+import Head from 'next/head';
 import store from '../../store';
 import { hideModal } from '../../store/actions';
 
@@ -66,7 +65,7 @@ class Modal extends Component {
         script.onload = () => {
           this.messaging = new window.Messaging();
           this.messaging.init();
-        }
+        };
 
         document.head.appendChild(script);
       }
@@ -367,8 +366,8 @@ class Modal extends Component {
     return (
       <div>
         <Head>
-          <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"/>
-          <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-messaging.js"/>
+          <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js" async/>
+          <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-messaging.js" async/>
         </Head>
         <div id="shadow" style={{ display, opacity }}>
           <div id="subscription-main">

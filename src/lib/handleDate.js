@@ -14,7 +14,7 @@ class HandleDate {
      * @return {String}
      */
   static getGMTDate(stringDate) {
-    console.log(stringDate)
+    console.log(stringDate);
     const date = new Date(stringDate || Date.now());
     const year = date.getFullYear();
     const day = date.getDate();

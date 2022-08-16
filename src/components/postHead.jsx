@@ -1,5 +1,5 @@
-import React from "react";
-import { string, array } from "prop-types";
+import React from 'react';
+import { string, array } from 'prop-types';
 import NextHead from './_headBase';
 
 const Head = (props) => {
@@ -21,11 +21,11 @@ const Head = (props) => {
 
       {
         props.images
-        ? props.images.map(e => <meta href={e} content={e} property='og:image' name='twitter:image' itemProp='image'/>)
+        ? props.images.map(e => <meta key={e} href={e} content={e} property='og:image' name='twitter:image' itemProp='image'/>)
         : <meta href={defaultOGImage} content={defaultOGImage} property='og:image' name='twitter:image' itemProp='image'/>
       }
   </NextHead>;
-}
+};
 
 Head.propTypes = {
   title: string,

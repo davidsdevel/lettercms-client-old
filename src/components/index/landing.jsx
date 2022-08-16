@@ -35,7 +35,7 @@ class Landing extends Component {
               <img src="/images/davidsdevel-rombo.png" className='desktop'/>
             </div>
             <div id='landing-scroll'>
-              <button id="circle" onClick={() => { scroll(0, clientHeight - 70)}}>
+              <button id="circle" onClick={() => { scroll(0, clientHeight - 70);}}>
                 <img src="/assets/arrow.svg" />
               </button>
             </div>

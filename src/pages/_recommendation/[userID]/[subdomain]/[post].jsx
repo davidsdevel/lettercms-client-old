@@ -1,9 +1,9 @@
 import {getPost} from '@/lib/mongo/posts';
 import Post from '@/components/post';
 
-export async function getStaticProps({params: {subdomain, post}}) {
+export async function getStaticProps({params: {subdomain, post, userID}}) {
   try {
-      const {blog, post, recommended, similar} = await getPost(subdomain, post);
+      const {blog, post, recommended, similar} = await getPost(subdomain, post, userID);
 
       if (blog.notFound)
         return {

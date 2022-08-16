@@ -1,9 +1,9 @@
 import Home from '@/components/index';
-import {getBlog} from '@/lib/mongo/blogs';
+import {getRecommended} from '@/lib/mongo/blogs';
 
-export async function getStaticProps({params: {subdomain}}) {
+export async function getStaticProps({params: {userID}}) {
   try {
-      const {blog, posts, notFound} = await getBlog(subdomain);
+      const {blog, posts, notFound} = await getRecommended(userID);
 
       if (notFound)
         return {

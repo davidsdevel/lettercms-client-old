@@ -11,7 +11,7 @@ const Head = (props) => {
   return <NextHead {...props}>
     <meta href={props.ogImage || defaultOGImage} content={props.ogImage || defaultOGImage} property='og:image' name='twitter:image' itemProp='image' rel="image_src"/>
   </NextHead>;
-}
+};
 
 Head.propTypes = {
   title: string,

@@ -6,29 +6,17 @@ module.exports.getOrigin = req => {
 	}
 
 	return location.origin;
-}
+};
 
 module.exports.getSubdomain = (req, query) => {
-	if (req)
-		return query?.subdomain || req.query?.subdomain || req.body?.subdomain || 'davidsdevel';
+  const hostname = req.headers.get('host');
 
-	return location.host.split('.')[0] || 'davidsdevel';
-}
+  const subdomain =
+    process.env.NODE_ENV === 'production' && process.env.VERCEL === '1'
+      ? hostname.replace('.lettercms-client.vercel.app', '')
+      : hostname.replace('.localhost:3002', '');
 
-module.exports.redirect = async (req, res, url) => {
-  if (req) {
-    res.writeHead(307, {
-      Location: url
-    });
-
-    res.end();
-  } else {
-    window.location = url;
-
-    await new Promise(e => {});
-  }
-      
-  return {props: {}}
-}
+  return subdomain;
+};
 
 module.exports.generateToken = subdomain => jwt.sign({subdomain}, process.env.JWT_AUTH);

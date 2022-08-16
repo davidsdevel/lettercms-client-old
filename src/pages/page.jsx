@@ -40,7 +40,7 @@ export default class Page extends Component {
           ev.preventDefault();
           Router.push(e.attributes.href);
         }
-      }
+      };
     }
   }
   render({html, css, title, description, image, pathname}) {
@@ -48,6 +48,6 @@ export default class Page extends Component {
       <PageHead title={title} description={description} image={image} url={pathname}/>
       <style>{css}</style>
       <div dangerouslySetInnerHTML={{__html: html}}/>
-    </div>
+    </div>;
   }
 }

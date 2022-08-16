@@ -5,4 +5,4 @@ const setCookie = (res, name, value, opts) => {
     opts.expires = new Date(Date.now() + optx.maxAge * 1000);
 
   res.setHeader('Set-Cookie', serialize(name, stringValue, opts));
-}
+};

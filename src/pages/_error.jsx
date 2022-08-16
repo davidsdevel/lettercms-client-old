@@ -6,7 +6,7 @@ class ErrorPage extends Component {
   static async getInitialProps({ req, res }) {
     return {
       hideLayout: true
-    }
+    };
   }
   render() {
     return <div>
@@ -39,7 +39,7 @@ class ErrorPage extends Component {
 					}
 				`}
         </style>
-      </div>
+      </div>;
   }
 }
 

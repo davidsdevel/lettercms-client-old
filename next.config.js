@@ -22,9 +22,6 @@ const cfg = {
 
     return config;
   },
-  assetPrefix: app.stage === 'production'
-    ? 'https://davids-devel-1565378708258.web.app'
-    : '',
   env: {
     FACEBOOK_APP_ID,
     FIREBASE_CONFIG: JSON.stringify(app.firebaseConfig),
@@ -35,28 +32,20 @@ const cfg = {
   async rewrites() {
     return [
       {
-        source: "/:subdomain/feed",
-        destination: "/api/feed?subdomain=:subdomain"
+        source: "/feed",
+        destination: "/api/feed"
       },
       {
-        source: "/:subdomain/sitemap.xml",
-        destination: "/api/sitemap?subdomain=:subdomain"
+        source: "/sitemap.xml",
+        destination: "/api/sitemap"
       },
       {
-        source: "/:subdomain/robots.txt",
-        destination: "/api/robots?subdomain=:subdomain"
+        source: "/robots.txt",
+        destination: "/api/robots"
       },
       {
-        source: "/:subdomain/manifest.json",
-        destination: "/api/manifest?subdomain=:subdomain"
-      },
-      {
-        source: '/:subdomain',
-        destination: '/?subdomain=:subdomain',
-      },
-      {
-        source: '/:subdomain/:_url',
-        destination: '/post?subdomain=:subdomain&ID=:_url',
+        source: "/manifest.json",
+        destination: "/api/manifest"
       }
     ]
   }

@@ -8,7 +8,7 @@ const PageHead = (props) => {
   const defaultOGImage = props.origin + '/images/og.jpg';
 
   return <NextHead>
-    <title>{props.title || "David's Devel - blog"}</title>
+    <title>{props.title || 'David\'s Devel - blog'}</title>
     <meta
       name="description"
       content={props.description || defaultDescription}
@@ -33,9 +33,9 @@ const PageHead = (props) => {
     <meta content="@davidsdevel" name="twitter:creator" />
     <meta content="summary_large_image" name="twitter:card" />
 
-    <meta content={props.title || "David's Devel"} property="og:title" />
-    <meta content={props.title || "David's Devel"} itemProp="name" />
-    <meta content={props.title || "David's Devel"} name="twitter:title" />
+    <meta content={props.title || 'David\'s Devel'} property="og:title" />
+    <meta content={props.title || 'David\'s Devel'} itemProp="name" />
+    <meta content={props.title || 'David\'s Devel'} name="twitter:title" />
 
     <meta content={props.description || defaultDescription} itemProp="description" />
     <meta content={props.description || defaultDescription} property="og:description" />
@@ -70,7 +70,7 @@ const PageHead = (props) => {
       }`
     }}/>
   </NextHead>;
-}
+};
 
 PageHead.propTypes = {
   title: string,

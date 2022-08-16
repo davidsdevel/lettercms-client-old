@@ -45,12 +45,8 @@
     "@babel/preset-env": "^7.10.3",
     "@lettercms/build-utils": "0.0.8",
     "eslint": "8",
-    "eslint-config-next": "12.1.6",
+    "eslint-config-next": "^12.2.5",
     "jest": "^26.0.1",
-    "react-refresh": "^0.8.3",
-    "terser": "^4.8.0",
-    "terser-webpack-plugin": "^4.0.0",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12"
+    "terser": "^4.8.0"
   }
 }

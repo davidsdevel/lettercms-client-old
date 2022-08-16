@@ -1,1 +1,1 @@
-headBlog.jsx
+headBlog.jsx;

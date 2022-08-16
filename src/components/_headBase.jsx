@@ -52,7 +52,7 @@ const Head = (props) => {
       }`
     }}/>
   </NextHead>;
-}
+};
 
 Head.propTypes = {
   title: string,

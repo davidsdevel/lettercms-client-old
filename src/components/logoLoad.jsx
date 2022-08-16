@@ -26,6 +26,6 @@ const Load = () => <div>
 			margin-top: 25px;
 		}
 	`}</style>
-</div>
+</div>;
 
 export default Load;
