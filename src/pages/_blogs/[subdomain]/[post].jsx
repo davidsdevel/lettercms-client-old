@@ -1,4 +1,4 @@
-import {getPost, getSubdomains} from '@/lib/mongo/posts';
+import {getPost, getUrls} from '@/lib/mongo/posts';
 import Post from '@/components/post';
 
 export async function getStaticProps({params: {subdomain, post}}) {
@@ -33,7 +33,7 @@ export async function getStaticProps({params: {subdomain, post}}) {
 }
 
 export async function getStaticPaths() {
-  const paths = await getSubdomains();
+  const paths = await getUrls();
 
   return {
     paths,
