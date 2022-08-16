@@ -33,7 +33,7 @@ export async function getPost(subdomain, url, userID) {
     mongo = connection.mongoose;
   }
 
-  const {blogs, posts, users: {Ratings}} = modelFactory(mongo, ['blogs', 'posts', 'ratings']);
+  const {blogs, posts, users: {Ratings}} = modelFactory(mongo, ['accounts','blogs', 'posts', 'ratings']);
   const blogData = await blogs.findOne({subdomain}, 'title', {lean: true});
 
   if (!blogData)

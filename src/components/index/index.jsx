@@ -36,10 +36,10 @@ const Home = ({data}) => {
     <Head title={blog.title} description={blog.description} />
     <Landing isSubscribe={false} description={data.description} />
     <h1>{blog.title}</h1>
-    {
+    {/*
       !isSubscribe
       && <h2>{blogData.description}</h2>
-    }
+    */}
     {
       posts.length > 0
         ? <div id="main">
