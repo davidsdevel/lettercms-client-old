@@ -18,8 +18,10 @@ export async function getUrls() {
 
   return Promise.resolve(postData.map(e => {
     return {
-      subdomain: e.subdomain,
-      post: e.url
+      params: {
+        subdomain: e.subdomain,
+        post: e.url
+      }
     }
   }));
 }
