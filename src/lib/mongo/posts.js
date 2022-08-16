@@ -143,7 +143,7 @@ async function getSimilars(model, {
     similars[1] = await model.findOne({_id: {$ne: actual}, subdomain, postStatus: 'published'}, 'title description thumbnail views comments', {lean: true, sort: {published: -1}});   
   
 
-  return Promise.resolve(_similars);
+  return Promise.resolve(similars);
 }
 
 async function getRecommended(model, userID, {
