@@ -9,6 +9,11 @@ const compare = (a, b) => {
 };
 
 export default async function revalidate(req, res) {
+  if (req.method !== 'POST')
+    return res.status(405).json({
+      status: 'Method not allowed'
+    });
+
   const { paths, token } = req.body;
 
   const isValidToken = compare(process.env.JWT_AUTH, token);
