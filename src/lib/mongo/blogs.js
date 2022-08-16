@@ -33,10 +33,12 @@ export async function getBlog(subdomain, page) {
       notFound: true
     });
 
+  delete blogData._id;
+
   const postsData = await posts.find({subdomain, postStatus: 'published'}, 'description title images url thumbnail comments category', {lean: true, limit: 10});
 
   return Promise.resolve({
-    posts: postsData,
+    posts: postsData.map(({_id, ...e}) => ({...e, _id: _id.toString()})),
     blog: blogData,
     accessToken: jwt.sign({subdomain}, process.env.JWT_AUTH)
   });

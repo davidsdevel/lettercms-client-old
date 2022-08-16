@@ -15,11 +15,9 @@ export async function getStaticProps({params: {subdomain}}) {
 
       return {
         props: {
-          data: JSON.stringify({
-            blog,
-            posts,
-            accessToken
-          })
+          blog,
+          posts,
+          accessToken
         }
       };
     } catch (err) {

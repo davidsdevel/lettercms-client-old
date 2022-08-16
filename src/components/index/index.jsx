@@ -29,12 +29,11 @@ const Posts = ({posts}) => {
   </div>
 }
 
-const Home = ({data}) => {
-  const {posts, blog} = JSON.parse(data);
+const Home = ({posts, blog}) => {
 
   return <div>
     <Head title={blog.title} description={blog.description} />
-    <Landing isSubscribe={false} description={data.description} />
+    <Landing isSubscribe={false} description={blog.description} />
     <h1>{blog.title}</h1>
     {/*
       !isSubscribe

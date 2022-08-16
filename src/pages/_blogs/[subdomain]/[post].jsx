@@ -3,8 +3,9 @@ import Post from '@/components/post';
 
 export async function getStaticProps({params: {subdomain, post}}) {
   try {
-      const {blog, post: _post, recommended, similar} = await getPost(subdomain, post);
-
+      const d = await getPost(subdomain, post)
+      const {blog, post: _post, recommended, similar, accessToken} = d;
+      
       if (blog.notFound)
         return {
           redirect: {
@@ -13,20 +14,19 @@ export async function getStaticProps({params: {subdomain, post}}) {
           }
         };
 
-      if (post.notFound)
+      if (_post?.notFound)
         return {
           notFound: true
         };
 
       return {
         props: {
-          data: JSON.stringify({
-            blog,
-            post: _post,
-            origin: '',
-            recommended,
-            similar
-          })
+          blog,
+          post: _post,
+          origin: '',
+          recommended,
+          similar,
+          accessToken
         }
       };
     } catch (err) {

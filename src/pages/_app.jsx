@@ -36,19 +36,20 @@ Sentry.init({
 const CustomApp = ({pageProps, Component}) => {
   const [showLoad, setLoad] = useState(false);
   const router = useRouter();
-  const sdk = new _sdk.Letter(pageProps.token);
+  const sdk = new _sdk.Letter(pageProps.accessToken);
 
   function setView() {
     try {
       const {post} = router.query;
 
-      sdk.stats.setView(url, fererrer);
+      sdk.stats.setView('/', document.referrer);
     } catch (err) {
       throw err;
     }
   }
 
   useEffect(() => {
+    console.log(pageProps);
 
     if (!router.query.userID) {
       sdk.createRequest('/user','POST', {

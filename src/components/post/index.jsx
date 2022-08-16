@@ -26,7 +26,7 @@ import {useEffect} from 'react';
       isSubscribe = false,
       origin,
       blog,
-    } = JSON.parse(props.data);
+    } = props;
 
     useEffect(() => {
       let lazyImages = [].slice.call(document.querySelectorAll('img.lazy-img'));

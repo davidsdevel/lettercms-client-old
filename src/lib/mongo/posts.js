@@ -47,7 +47,7 @@ export async function getPost(subdomain, url, userID) {
     subdomain,
     url
   },
-  'images content title tags updated description category description published authorEmail thumbnail',
+  'images url content title tags postStatus updated category description published authorEmail thumbnail',
   {
     lean: true,
     populate: {
@@ -56,7 +56,7 @@ export async function getPost(subdomain, url, userID) {
     }
   });
 
-  if (postsData?.postStatus !== 'published')
+  if (postData?.postStatus !== 'published')
     return Promise.resolve({
       post: {
         notFound: true
@@ -66,8 +66,8 @@ export async function getPost(subdomain, url, userID) {
 
   const similars = await getSimilars(posts, {
     subdomain,
-    tags: postsData.tags || [],
-    actual: postData.url,
+    tags: postData.tags || [],
+    actual: postData._id,
     hasRecommend: !!userID
   });
 
@@ -83,8 +83,17 @@ export async function getPost(subdomain, url, userID) {
       similar: similar._id
     });
 
+  recommended._id = recommended._id.toString();
+  similar._id = similar._id.toString();
+  postData._id = postData._id.toString();
+  postData.updated = postData.updated.toISOString();
+  postData.published = postData.published.toISOString();
+  postData.author._id = postData.author._id.toString();
+
+  delete blogData._id;
+
   return Promise.resolve({
-    post: postsData,
+    post: postData,
     blog: blogData,
     similar,
     recommended,
@@ -102,7 +111,7 @@ async function getSimilars(model, {
   
   const similars = await model.find({
     subdomain,
-    $nor:[{actual}],
+    $nor:[{_id: actual}],
     $or: tagsMapped,
     postStatus: 'published'
   },
@@ -124,6 +133,12 @@ async function getSimilars(model, {
   }).sort((a,b) => a.matches > b.matches ? -1 : +1);
 
   const _similars = [];
+
+  if (ordered.length < 1) {
+    ordered = await model.find({_id: {$ne: actual}, subdomain, postStatus: 'published'}, 'url', {lean: true, sort: {published: -1}, limit: 2});
+  } else if (ordered.length < 2) {
+    ordered[1] = await model.findOne({_id: {$ne: actual}, subdomain, postStatus: 'published'}, 'url', {lean: true, sort: {published: -1}});   
+  }
 
   _similars[0] = await model.findOne({subdomain, url: ordered[0].url}, 'title description thumbnail views comments', {lean: true});
 

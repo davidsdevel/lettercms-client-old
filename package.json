@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "node index",
-    "start:dev": "node src/compile && next dev --port 3002",
+    "start:dev": "next dev --port 3002",
     "start:vercel-dev": "node src/compile && next dev src/ --port 3002",
     "start:test": "set NODE_ENV=production&& node src/compile && next build src/ && node test",
     "compile": "node src/compile && next build src/",

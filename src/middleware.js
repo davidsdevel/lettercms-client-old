@@ -3,7 +3,9 @@ import { NextResponse } from 'next/server';
 export const config = {
   matcher: [
     '/',
-    '/:path*'
+    "/([^/.]*)", 
+    "/_blogs/:path*", 
+    "/_recommendations/:path*"
   ],
 };
 
