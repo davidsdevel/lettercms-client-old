@@ -1,4 +1,4 @@
-import {getPost} from '@/lib/mongo/posts';
+import {getPost, getSubdomains} from '@/lib/mongo/posts';
 import Post from '@/components/post';
 
 export async function getStaticProps({params: {subdomain, post}}) {
