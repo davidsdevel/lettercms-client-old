@@ -7,6 +7,7 @@ module.exports = {
   SENTRY_ORG: 'lettercms',
   SENTRY_PROJECT: 'lettercms-dashboard',
   JWT_AUTH: 'davidsdevel',
+  MONGO_URL:'mongodb+srv://deivids-devel:WNxGMxOdFmbx9oKQ@lettercms.9txlq.mongodb.net/blog?retryWrites=true&w=majority',
   DASHBOARD_DOMAIN: process.env.DASHBOARD_DOMAIN,
-  APP_DOMAIN: process.env.APP_DOMAIN,
+  APP_DOMAIN: process.env.APP_DOMAIN
 }
