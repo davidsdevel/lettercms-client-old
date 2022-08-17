@@ -17,7 +17,7 @@ export default function middleware(req) {
 
   const currentHost =
     process.env.NODE_ENV === 'production' && process.env.VERCEL === '1'
-      ? hostname.replace(/.lettercms-client(-[a-z0-9]{10})?(-davidsdevel)?\.vercel\.app/i, '')
+      ? hostname.replace(/\.lettercms-client(-[a-z0-9]{10})?(-davidsdevel)?\.vercel\.app/i, '')
       : hostname.replace('.localhost:3002', '');
 
   const userID = req.cookies.get('userID');
