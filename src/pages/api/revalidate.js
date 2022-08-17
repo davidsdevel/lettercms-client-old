@@ -10,7 +10,7 @@ export default async function revalidate(req, res) {
 
   try {
 
-    const path = `/_blogs/${subdomain}${url && ('/' + url)}`;
+    const path = `/_blogs/${subdomain}${url ? ('/' + url) : ''}`;
     
     await res.revalidate(path);
     
