@@ -9,28 +9,24 @@ const compare = (a, b) => {
 };
 
 export default async function revalidate(req, res) {
-  if (req.method !== 'POST')
-    return res.status(405).json({
-      status: 'Method not allowed'
-    });
 
-  const { paths, token } = req.body;
+  const { path, token } = req.query;
 
-  const isValidToken = compare(process.env.JWT_AUTH, token);
+  const isValidToken = process.env.JWT_AUTH === token;
   if (!isValidToken)
     res.status(401).json({
       status: 'Unauthorized'
     });
 
   try {
-    await Promise.all(paths.map(path => res.revalidate(urlPath))); 
+    await res.revalidate(path); 
 
     res.status(200).json({
       status: 'OK',
     });
   } catch (error) {
     res.status(500).json({
-      status: `Failed to revalidate "${urlPath}"`,
+      status: `Failed to revalidate "${path}"`,
     });
   }
 }
