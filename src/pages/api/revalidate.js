@@ -8,9 +8,9 @@ export default async function revalidate(req, res) {
       status: 'Unauthorized'
     });
 
+  const path = `/_blogs/${subdomain}${url ? ('/' + url) : ''}`;
   try {
 
-    const path = `/_blogs/${subdomain}${url ? ('/' + url) : ''}`;
     
     await res.revalidate(path);
     
