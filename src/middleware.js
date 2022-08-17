@@ -20,8 +20,6 @@ export default function middleware(req) {
       ? hostname.replace('.lettercms.vercel.app', '')
       : hostname.replace('.localhost:3002', '');
 
-
-
   url.pathname = `/_blogs/${currentHost}${url.pathname}`;
   return NextResponse.rewrite(url);
   /*const userID = req.cookies.get('userID');
