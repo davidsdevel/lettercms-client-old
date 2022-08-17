@@ -9,7 +9,7 @@ export default async function revalidate(req, res) {
     });
 
   try {
-    const data = await req.revalidate(path); 
+    const data = await res.revalidate(path); 
 
     res.status(200).json({
       status: 'OK',
@@ -18,6 +18,7 @@ export default async function revalidate(req, res) {
   } catch (error) {
     res.status(500).json({
       status: `Failed to revalidate "${path}"`,
+      error
     });
   }
 }
