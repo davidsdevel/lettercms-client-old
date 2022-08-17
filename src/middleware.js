@@ -20,7 +20,11 @@ export default function middleware(req) {
       ? hostname.replace('.lettercms.vercel.app', '')
       : hostname.replace('.localhost:3002', '');
 
-  const userID = req.cookies.get('userID');
+
+
+  url.pathname = `/_blogs/${currentHost}${url.pathname}`;
+  return NextResponse.rewrite(url);
+  /*const userID = req.cookies.get('userID');
   
   if (!userID || url.pathname === '/search') {
     url.pathname = `/_blogs/${currentHost}${url.pathname}`;
@@ -28,5 +32,5 @@ export default function middleware(req) {
   } else {
     url.pathname = `/_recommendations/${userID}/${currentHost}${url.pathname}`;
     return NextResponse.rewrite(url);
-  }
+  }*/
 }

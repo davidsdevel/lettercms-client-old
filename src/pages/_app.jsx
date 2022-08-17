@@ -50,13 +50,14 @@ const CustomApp = ({pageProps, Component}) => {
   }
 
   useEffect(() => {
-    if (!router.query.userID) {
+    /*const UID = Cookies.get('userID');
+    if (!UID) {
       sdk.createRequest('/user','POST', {
         device: /Android|iPhone|iPad/.test(navigator.userAgent) ? 'mobile' : 'desktop'
       }).then(({id}) => {
         Cookies.set('userID', id);
       });
-    }
+    }*/
 
     setView();
     sdk.stats.startTrace();
