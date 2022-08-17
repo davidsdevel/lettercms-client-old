@@ -52,6 +52,9 @@ export async function getPost(subdomain, url, userID) {
     populate: {
       path: 'author',
       select: 'name lastname description photo facebook twitter instagram linkedin website'
+    },
+    sort: {
+      published: -1
     }
   });
 
