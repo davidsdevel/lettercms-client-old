@@ -28,7 +28,7 @@ export async function getStaticPaths() {
   const paths = await getSubdomains();
 
   return {
-    paths: paths,
+    paths: [],
     fallback: true,
   };
 };

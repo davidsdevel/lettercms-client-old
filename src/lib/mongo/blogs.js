@@ -35,7 +35,10 @@ export async function getBlog(subdomain, page) {
 
   delete blogData._id;
 
-  const postsData = await posts.find({subdomain, postStatus: 'published'}, 'description title images url thumbnail comments category', {lean: true, limit: 10});
+  const postsData = await posts.find({subdomain, postStatus: 'published'}, 'description title images url thumbnail comments category', {lean: true, limit: 10, 
+    sort: {
+      published: -1
+    }});
 
   return Promise.resolve({
     posts: postsData.map(({_id, ...e}) => ({...e, _id: _id.toString()})),
