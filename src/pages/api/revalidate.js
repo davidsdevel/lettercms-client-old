@@ -1,6 +1,6 @@
 export default async function revalidate(req, res) {
 
-  const { path, token } = req.query;
+  const { subdomain, url, token } = req.query;
 
   const isValidToken = process.env.JWT_AUTH === token;
   if (!isValidToken)
@@ -9,8 +9,11 @@ export default async function revalidate(req, res) {
     });
 
   try {
-    res.revalidate(path); 
 
+    const path = `/_blogs/${subdomain}${url && ('/' + url)}`;
+    
+    await res.revalidate(path);
+    
     res.status(200).json({
       status: 'OK',
       data
