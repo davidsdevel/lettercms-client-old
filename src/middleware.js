@@ -13,7 +13,7 @@ export default function middleware(req) {
   const url = req.nextUrl;
 
   // Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000)
-  const hostname = req.headers.get('host') || 'demo.vercel.pub';
+  const hostname = req.headers.get('host') || 'davidsdevel.lettercms.vercel.app';
 
   const currentHost =
     process.env.NODE_ENV === 'production' && process.env.VERCEL === '1'
