@@ -9,10 +9,11 @@ export default async function revalidate(req, res) {
     });
 
   try {
-    await res.revalidate(path); 
+    const data = await req.revalidate(path); 
 
     res.status(200).json({
       status: 'OK',
+      data
     });
   } catch (error) {
     res.status(500).json({
