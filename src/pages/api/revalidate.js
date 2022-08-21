@@ -1,14 +1,15 @@
 export default async function revalidate(req, res) {
 
-  const { subdomain, url, token } = req.query;
+  if (req.method !== 'POST')
+    return res.sendStatus(405);
 
-  const path = `/_blogs/${subdomain}${url ? ('/' + url) : ''}`;
+  const { path, token } = req.body;
+
   try {
     await res.revalidate(path);
     
     res.status(200).json({
-      status: 'OK',
-      data
+      status: 'OK'
     });
   } catch (error) {
     res.status(500).json({
