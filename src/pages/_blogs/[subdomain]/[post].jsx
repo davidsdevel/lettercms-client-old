@@ -14,7 +14,7 @@ export async function getStaticProps({params: {subdomain, post}}) {
           }
         };
 
-      if (_post?.notFound)
+      if (_post?.notFound || !_post)
         return {
           notFound: true
         };
