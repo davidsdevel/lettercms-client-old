@@ -3,7 +3,7 @@ import {useRouter} from 'next/router';
 import Head from 'next/head';
 import * as Sentry from '@sentry/browser';
 import { RewriteFrames } from '@sentry/integrations';
-import _sdk from '@lettercms/sdk';
+import sdk from '@lettercms/sdk';
 import Cookies from 'js-cookie';
 import Facebook from '@/lib/client/FacebookSDK';
 import Load from '@/components/loadBar';
@@ -37,7 +37,9 @@ const CustomApp = ({pageProps, Component}) => {
   const [showLoad, setLoad] = useState(false);
   const router = useRouter(); 
 
-  const sdk = new _sdk.Letter(pageProps.accessToken);
+  useEffect(() => {
+    sdk.setAccessToken(pageProps.accessToken);
+  }, [pageProps.accessToken])
 
   function setView() {
     try {
@@ -50,6 +52,8 @@ const CustomApp = ({pageProps, Component}) => {
   }
 
   useEffect(() => {
+    sdk.setAccessToken(pageProps.accessToken);
+
     /*const UID = Cookies.get('userID');
     if (!UID) {
       sdk.createRequest('/user','POST', {
@@ -101,7 +105,7 @@ const CustomApp = ({pageProps, Component}) => {
     }
     <Nav subdomain={router.query.subdomain}/>
     <Component {...pageProps} />
-    <Footer title={pageProps.blogTitle || pageProps.blogData?.title}/>
+    <Footer title={pageProps.blog?.title}/>
   </div>
 }
 

@@ -192,7 +192,7 @@ class Nav extends Component {
           </li>
           {links.map(({ key, href, label }) => (
             <li key={key}>
-              <Link href={`/${props.subdomain}${href}`}>
+              <Link href={href}>
                 <a onClick={this.toggleMenu}>{label}</a>
               </Link>
             </li>
