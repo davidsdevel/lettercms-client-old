@@ -36,11 +36,11 @@ const cfg = {
           headers: [
             {
               key: 'Access-Control-Allow-Origin',
-              value: 'http://localhost:3009,lettercms-api-staging.herokuapp.com,lettercms-api.herokuapp.com,lettercms-api.vercel.app,lettercms.vercel.app,*.lettercms.vercel.app'
+              value: '*'
             },
             {
               key: 'Access-Control-Allow-Methods',
-              value: 'POST,OPTIONS'
+              value: 'POST,OPTIONS,HEAD'
             },
             {
               key: 'Access-Control-Allow-Headers',
