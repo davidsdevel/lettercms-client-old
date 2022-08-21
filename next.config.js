@@ -29,6 +29,27 @@ const cfg = {
     JWT_AUTH,
     RELEASE:  app.version,
   },
+   async headers() {
+    return [
+        {
+          source: '/api/revalidate',
+          headers: [
+            {
+              key: 'Access-Control-Allow-Origin',
+              value: 'http://localhost:3000,https://lettercms-api-staging.herokuapp.com,https://lettercms-api.herokuapp.com,https://lettercms-api.vercel.app'
+            },
+            {
+              key: 'Access-Control-Allow-Methods',
+              value: 'POST,OPTIONS'
+            },
+            {
+              key: 'Access-Control-Allow-Headers',
+              value: 'Origin,X-Requested-With,Content-Type,Accept,Authorization'
+            },
+          ]
+        }
+      ];
+  },
   async rewrites() {
     return [
       {
