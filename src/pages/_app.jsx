@@ -5,10 +5,10 @@ import * as Sentry from '@sentry/browser';
 import { RewriteFrames } from '@sentry/integrations';
 import _sdk from '@lettercms/sdk';
 import Cookies from 'js-cookie';
-import Facebook from '../lib/client/FacebookSDK';
-import Load from'../components/loadBar';
-import Nav from '../components/nav';
-import Footer from '../components/index/footer';
+import Facebook from '@/lib/client/FacebookSDK';
+import Load from '@/components/loadBar';
+import Nav from '@/components/nav';
+import Footer from '@/components/index/footer';
 import '@/styles/global.css';
 
 const isDev = process.env.NODE_ENV !== 'production';

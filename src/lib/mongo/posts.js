@@ -57,6 +57,9 @@ export async function getPost(subdomain, url, userID) {
 
   if (postData?.postStatus !== 'published')
     return Promise.resolve({
+      blog: {
+        notFound: false
+      },
       post: {
         notFound: true
       }
