@@ -36,7 +36,7 @@ const cfg = {
           headers: [
             {
               key: 'Access-Control-Allow-Origin',
-              value: 'http://localhost:3000,https://lettercms-api-staging.herokuapp.com,https://lettercms-api.herokuapp.com,https://lettercms-api.vercel.app'
+              value: 'http://localhost:3000,lettercms-api-staging.herokuapp.com,lettercms-api.herokuapp.com,lettercms-api.vercel.app,lettercms.vercel.app,*.lettercms.vercel.app'
             },
             {
               key: 'Access-Control-Allow-Methods',
