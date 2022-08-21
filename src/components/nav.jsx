@@ -3,9 +3,7 @@ import Link from 'next/link';
 import Router from 'next/router';
 
 const links = [
-  { href: '/acerca', label: 'Acerca de mi' },
-  { href: '/terminos', label: 'Terminos de Uso' },
-  { href: '/privacidad', label: 'Politicas de Privacidad' },
+  { href: '/search', label: 'Busqueda' }
 ].map((link) => {
   link.key = `nav-link-${link.href}-${link.label}`;
   return link;
@@ -188,7 +186,7 @@ class Nav extends Component {
           </button>
           <img src="/images/davidsdevel-black.png" />
           <li>
-            <Link href={`/${props.subdomain}`}>
+            <Link href='/'>
               <a onClick={this.toggleMenu}>Inicio</a>
             </Link>
           </li>

@@ -10,12 +10,12 @@ const ErrorPage = () => (
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <div id="container">
-      <img src="/images/warn.png" />
+      <img src="https://cdn.jsdelivr.net/gh/davidsdevel/lettercms-cdn/public/assets/404.svg" />
       <div>
         <p>Ups. No hay nada por aqui</p>
         <span>
           ¿Te perdiste? Bueno dejame llevarte hasta el
-          <Link href="https://lettercms-dashboard-davidsdevel.vercel.app"><a> Inicio</a></Link>
+          <Link href="/"><a> Inicio</a></Link>
         </span>
       </div>
     </div>
@@ -31,9 +31,7 @@ const ErrorPage = () => (
 			justify-content: space-evenly;
 			align-items: center;
 			background: #f7f7f7;
-		}
-		#container img {
-			width: 150px;
+      padding: 2rem 0;
 		}
 	`}
     </style>
