@@ -3,7 +3,7 @@ import Post from '@/components/post';
 import connection from '@lettercms/utils/lib/connection';
 import modelFactory from '@lettercms/models';
 
-export async function getServerSideProps({params: {subdomain, id}}) {
+export async function getStaticProps({params: {subdomain, id}}) {
   try {
     if (!mongo) {
       await connection.connect();
@@ -41,4 +41,10 @@ export async function getServerSideProps({params: {subdomain, id}}) {
   }
 }
 
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: true,
+  };
+};
 export default Post;
