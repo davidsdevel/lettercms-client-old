@@ -5,7 +5,8 @@ export const config = {
     '/',
     "/([^/.]*)", 
     "/_blogs/:path*", 
-    "/_recommendations/:path*"
+    "/_recommendations/:path*",
+    "/_preview/:path*"
   ],
 };
 
