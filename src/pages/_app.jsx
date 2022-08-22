@@ -35,6 +35,7 @@ Sentry.init({
 
 const CustomApp = ({pageProps, Component}) => {
   const [showLoad, setLoad] = useState(false);
+  const [tracingInit, setTracing] = useState(false);
   const router = useRouter(); 
 
   useEffect(() => {
@@ -42,6 +43,9 @@ const CustomApp = ({pageProps, Component}) => {
   }, [pageProps.accessToken])
 
   function setView() {
+    if (pageProps.notFound)
+      return;
+
     try {
       const {post} = router.query;
 
@@ -64,7 +68,11 @@ const CustomApp = ({pageProps, Component}) => {
     }*/
 
     setView();
-    sdk.stats.startTrace();
+
+    if (!pageProps.notFound && !tracingInit) {
+      sdk.stats.startTrace();
+      setTracing(true)
+    }
     
     const html = document.getElementsByTagName('html')[0];
 
@@ -81,7 +89,11 @@ const CustomApp = ({pageProps, Component}) => {
       html.style.scrollBehavior = 'smooth';
 
       setLoad(false);
+
+
+
     });
+
 
   }, []);
 

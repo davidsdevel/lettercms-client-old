@@ -212,6 +212,10 @@ import {useEffect} from 'react';
         }
         main p {
           text-align: justify;
+          padding: 1rem 0;
+          font-size: 1rem;
+          line-height: 1.75;
+          font-weight: 300;
         }
         main img {
           max-width: calc(100%);

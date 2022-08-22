@@ -20,6 +20,14 @@ export default function middleware(req) {
       ? hostname.replace('.lettercms.vercel.app', '')
       : hostname.replace('.localhost:3002', '');
 
+
+  const isPreview = req.cookies.get('__next_preview_data ') || req.cookies.get('__prerender_bypass ');
+
+  if (isPreview) {
+    url.pathname = `/_preview/${currentHost}${url.pathname}`;
+    return NextResponse.rewrite(url);  
+  }
+
   url.pathname = `/_blogs/${currentHost}${url.pathname}`;
   return NextResponse.rewrite(url);
   /*const userID = req.cookies.get('userID');
