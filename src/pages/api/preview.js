@@ -1,24 +1,19 @@
-import connection from '@lettercms/utils/lib/connection';
-import modelFactory from '@lettercms/models';
-import jwt from 'jsonwebtoken';
+import _sdk from '@lettercms/sdk';
 
 let mongo = connection.mongoose;
 
 export default async (req, res) => {
-  if (!req.query.id) {
+  const {subdomain, id} = req.query;
+  if (!id || !subdomain) {
     return res.status(401).json({ message: 'Invalid ID' })
   }
 
-  if (!mongo) {
-    await connection.connect();
+  const existsPost = await _sdk.Letter.existsPost({
+    subdomain,
+    _id: id
+  });
 
-    mongo = connection.mongoose;
-  }
-  const {blogs, posts} = modelFactory(mongo, ['accounts', 'posts']);
-
-  const existsBlog = await blogs.exists({_id: req.query.id});
-
-  if (!existsBlog) {
+  if (!existsPost) {
     return res.status(401).json({ message: 'Invalid slug' })
   }
 

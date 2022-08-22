@@ -23,6 +23,23 @@ export default function middleware(req) {
 
   const isPreview = req.cookies.get('__next_preview_data ') || req.cookies.get('__prerender_bypass ');
 
+  if (url.pathname === "/feed") {
+    url.pathname = "/api/feed?subdomain="+currentHost;
+    return NextResponse.rewrite(url);
+  }
+  if (url.pathname === "/sitemap.xml") {
+    url.pathname = "/api/sitemap?subdomain="+currentHost;
+    return NextResponse.rewrite(url);
+  }
+  if (url.pathname === "/robots.txt") {
+    url.pathname = "/api/robots?subdomain="+currentHost;
+    return NextResponse.rewrite(url);
+  }
+  if (url.pathname === "/manifest.json") {
+    url.pathname = "/api/manifest?subdomain="+currentHost;
+    return NextResponse.rewrite(url);
+  }
+
   if (isPreview) {
     url.pathname = `/_preview/${currentHost}${url.pathname}`;
     return NextResponse.rewrite(url);  
