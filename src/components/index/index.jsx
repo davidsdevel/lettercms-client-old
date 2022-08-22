@@ -26,8 +26,8 @@ const Posts = ({posts}) => {
         />
       )
     }
-  </div>
-}
+  </div>;
+};
 
 const Home = ({posts, blog}) => {
 
@@ -114,7 +114,7 @@ const Home = ({posts, blog}) => {
           }
         `}
         </style>
-      </div>
-}
+      </div>;
+};
 
 export default Home;

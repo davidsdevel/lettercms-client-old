@@ -1,13 +1,9 @@
-const {argv} = require('yargs');
 const {join} = require('path');
 
 const isDev = process.env.NODE_ENV !== 'production';
 
-const stage = argv.stage || 'preview';
-
 const appConfig = {
   version: require('../package.json').version,
-  stage,
   firebaseConfig: {
     apiKey: 'AIzaSyAbaJKknzBo2Dy1_wEnU-nie4D4PBMnOxA',
     authDomain: 'lettercms-1.firebaseapp.com',

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import fetch from 'isomorphic-fetch';
+import sdk from '@lettercms/sdk';
 import Router from 'next/router';
 import { string } from 'prop-types';
 import Head from '../components/head';
@@ -30,9 +30,7 @@ class Search extends Component {
     const origin = getOrigin(req);
 
     if (q) {
-      const searchReq = await fetch(`${origin}/api/posts/search?q=${q}&page=1&fields=description,title,image,url,comments,category`);
-
-      const data = await searchReq.json();
+      const data = await sdk.createRequest(`/post/search?q=${q}`);
 
       return {
         ...data,
@@ -49,8 +47,7 @@ class Search extends Component {
       const { search } = this.props;
       const { page, posts } = this.state;
 
-      const req = await fetch(`/api/posts/search?q=${search}&page=${page + 1}&fields=description,title,image,url,comments,category`);
-      const data = await req.json();
+      const data = await sdk.createRequest(`/post/search?q=${q}`);
 
       this.setState({
         posts: Object.assign([], posts, data.posts),

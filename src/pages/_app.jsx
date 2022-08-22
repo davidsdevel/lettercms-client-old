@@ -1,8 +1,6 @@
 import {useEffect, useState} from 'react';
 import {useRouter} from 'next/router';
 import Head from 'next/head';
-import * as Sentry from '@sentry/browser';
-import { RewriteFrames } from '@sentry/integrations';
 import sdk from '@lettercms/sdk';
 import Cookies from 'js-cookie';
 import Facebook from '@/lib/client/FacebookSDK';
@@ -11,36 +9,15 @@ import Nav from '@/components/nav';
 import Footer from '@/components/index/footer';
 import '@/styles/global.css';
 
-const isDev = process.env.NODE_ENV !== 'production';
-
-Sentry.init({
-  enabled: !isDev,
-  dsn: process.env.SENTRY_DSN,
-  maxBreadcrumbs: 50,
-  debug: isDev,
-  environment: 'client',
-  release: process.env.RELEASE,
-  integrations: [
-    new RewriteFrames({
-      iteratee: (frame) => {
-        const splitted = frame.filename.split('.next');
-
-        frame.filename = frame.filename.replace(splitted[0], 'app:///_next');
-
-        return frame;
-      },
-    }),
-  ],
-});
-
 const CustomApp = ({pageProps, Component}) => {
   const [showLoad, setLoad] = useState(false);
   const [tracingInit, setTracing] = useState(false);
   const router = useRouter(); 
 
   useEffect(() => {
-    sdk.setAccessToken(pageProps.accessToken);
-  }, [pageProps.accessToken])
+    if (pageProps.accessToken)
+      sdk.setAccessToken(pageProps.accessToken);
+  }, [pageProps.accessToken]);
 
   function setView() {
     if (pageProps.notFound)
@@ -56,7 +33,8 @@ const CustomApp = ({pageProps, Component}) => {
   }
 
   useEffect(() => {
-    sdk.setAccessToken(pageProps.accessToken);
+    if (pageProps.accessToken)
+      sdk.setAccessToken(pageProps.accessToken);
 
     /*const UID = Cookies.get('userID');
     if (!UID) {
@@ -71,7 +49,7 @@ const CustomApp = ({pageProps, Component}) => {
 
     if (!pageProps.notFound && !tracingInit) {
       sdk.stats.startTrace();
-      setTracing(true)
+      setTracing(true);
     }
     
     const html = document.getElementsByTagName('html')[0];
@@ -118,7 +96,7 @@ const CustomApp = ({pageProps, Component}) => {
     <Nav subdomain={router.query.subdomain}/>
     <Component {...pageProps} />
     <Footer title={pageProps.blog?.title}/>
-  </div>
-}
+  </div>;
+};
 
 export default CustomApp;

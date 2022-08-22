@@ -3,10 +3,10 @@ import { NextResponse } from 'next/server';
 export const config = {
   matcher: [
     '/',
-    "/([^/.]*)", 
-    "/_blogs/:path*", 
-    "/_recommendations/:path*",
-    "/_preview/:path*"
+    '/([^/.]*)', 
+    '/_blogs/:path*', 
+    '/_recommendations/:path*',
+    '/_preview/:path*'
   ],
 };
 
@@ -24,23 +24,23 @@ export default function middleware(req) {
 
   const isPreview = req.cookies.get('__next_preview_data ') || req.cookies.get('__prerender_bypass ');
 
-  if (url.pathname === "/feed") {
-    url.pathname = "/api/feed?subdomain="+currentHost;
+  if (url.pathname === '/feed') {
+    url.pathname = '/api/feed?subdomain='+currentHost;
     return NextResponse.rewrite(url);
   }
-  if (url.pathname === "/sitemap.xml") {
-    url.pathname = "/api/sitemap?subdomain="+currentHost;
+  if (url.pathname === '/sitemap.xml') {
+    url.pathname = '/api/sitemap?subdomain='+currentHost;
     return NextResponse.rewrite(url);
   }
-  if (url.pathname === "/robots.txt") {
-    url.pathname = "/api/robots?subdomain="+currentHost;
+  if (url.pathname === '/robots.txt') {
+    url.pathname = '/api/robots?subdomain='+currentHost;
     return NextResponse.rewrite(url);
   }
-  if (url.pathname === "/manifest.json") {
-    url.pathname = "/api/manifest?subdomain="+currentHost;
+  if (url.pathname === '/manifest.json') {
+    url.pathname = '/api/manifest?subdomain='+currentHost;
     return NextResponse.rewrite(url);
   }
-  if (url.pathname === "/api/preview") {
+  if (url.pathname === '/api/preview') {
     return url;
   }
 

@@ -3,7 +3,7 @@ import Post from '@/components/post';
 
 export async function getStaticProps({params: {subdomain, post}}) {
   try {
-      const d = await getPost(subdomain, post)
+      const d = await getPost(subdomain, post);
       const {blog, post: _post, recommended, similar, accessToken} = d;
       
       if (blog.notFound)
@@ -35,7 +35,7 @@ export async function getStaticProps({params: {subdomain, post}}) {
 }
 
 export async function getStaticPaths() {
-  const paths = await getUrls()
+  const paths = await getUrls();
   return {
     paths,
     fallback: true,

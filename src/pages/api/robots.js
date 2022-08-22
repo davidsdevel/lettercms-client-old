@@ -1,8 +1,9 @@
 import {Letter} from '@lettercms/sdk';
 import jwt from 'jsonwebtoken';
 import {getSubdomain} from '@/lib/utils';
+import { withSentry } from '@sentry/nextjs';
 
-export default function Robots(req, res) {
+function Robots(req, res) {
   const {subdomain} = req.query;
 
   const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
@@ -35,3 +36,5 @@ export default function Robots(req, res) {
     
   res.send(robots.replace(/\n\s*/g, '\n'));
 }
+
+export default withSentry(Robots);

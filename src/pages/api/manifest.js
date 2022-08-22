@@ -1,8 +1,9 @@
 import {Letter} from '@lettercms/sdk';
 import jwt from 'jsonwebtoken';
 import {getSubdomain} from '../../lib/utils';
+import { withSentry } from '@sentry/nextjs';
 
-export default async function Manifest(req, res) {
+async function Manifest(req, res) {
   const {subdomain} = req.query;
 
   const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
@@ -27,3 +28,5 @@ export default async function Manifest(req, res) {
     background_color: '#000',
   });
 }
+
+export default withSentry(Manifest);

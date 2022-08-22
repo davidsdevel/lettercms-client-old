@@ -57,7 +57,7 @@ export async function getUrls() {
         subdomain: e.subdomain,
         post: e.url
       }
-    }
+    };
   }));
 }
 
@@ -174,7 +174,7 @@ async function getSimilars(model, {
       return {
         matches,
         _id: e._id
-      }
+      };
     }).sort((a,b) => a.matches > b.matches ? -1 : +1).slice(0, 2);
   }
   

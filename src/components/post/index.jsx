@@ -72,7 +72,7 @@ import {useEffect} from 'react';
         document.removeEventListener('scroll', lazyLoad);
         window.removeEventListener('resize', lazyLoad);
         window.removeEventListener('orientationchange', lazyLoad);
-        document.getElementById('_code').remove();
+        document.getElementById('_code')?.remove();
       };
     }, []);
 
