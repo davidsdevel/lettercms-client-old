@@ -1,7 +1,5 @@
 import _sdk from '@lettercms/sdk';
 
-let mongo = connection.mongoose;
-
 export default async (req, res) => {
   const {subdomain, id} = req.query;
   if (!id || !subdomain) {
