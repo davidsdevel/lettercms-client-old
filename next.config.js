@@ -49,26 +49,6 @@ const cfg = {
           ]
         }
       ];
-  },
-  async rewrites() {
-    return [
-      {
-        source: "/feed",
-        destination: "/api/feed"
-      },
-      {
-        source: "/sitemap.xml",
-        destination: "/api/sitemap"
-      },
-      {
-        source: "/robots.txt",
-        destination: "/api/robots"
-      },
-      {
-        source: "/manifest.json",
-        destination: "/api/manifest"
-      }
-    ]
   }
 };
 

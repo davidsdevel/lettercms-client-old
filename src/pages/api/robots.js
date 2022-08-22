@@ -3,7 +3,8 @@ import jwt from 'jsonwebtoken';
 import {getSubdomain} from '@/lib/utils';
 
 export default function Robots(req, res) {
-  const subdomain = getSubdomain(req);
+  const {subdomain} = req.query;
+
   const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
   const sdk = new Letter(token);
 

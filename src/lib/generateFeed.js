@@ -5,7 +5,7 @@ import {Feed} from 'feed';
 
 export default async function feed(req, res) {
     try {
-      const subdomain = getSubdomain(req);
+      const {subdomain} = req.query;
       const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
       const sdk = new Letter(token);
 

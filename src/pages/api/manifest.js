@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import {getSubdomain} from '../../lib/utils';
 
 export default async function Manifest(req, res) {
-  const subdomain = getSubdomain(req);
+  const {subdomain} = req.query;
 
   const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
 
