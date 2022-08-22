@@ -40,6 +40,9 @@ export default function middleware(req) {
     url.pathname = "/api/manifest?subdomain="+currentHost;
     return NextResponse.rewrite(url);
   }
+  if (url.pathname === "/api/preview") {
+    return url;
+  }
 
   if (isPreview) {
     url.pathname = `/_preview/${currentHost}${url.pathname}`;
