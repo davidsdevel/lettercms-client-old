@@ -17,6 +17,11 @@ const cfg = {
   poweredByHeader: false,
   webpack(config, { isServer }) {
 
+    if (!isServer)
+      config.node = {
+        fs: 'empty'
+      };
+
     if (isServer)
       config.resolve.alias['@sentry/browser'] = '@sentry/node';
 
