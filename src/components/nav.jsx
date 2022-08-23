@@ -168,13 +168,13 @@ class Nav extends Component {
     return (
       <nav id="nav">
         <div id="mobile-bar" style={mobileBar}>
-          <img onClick={this.toggleMenu} id="menu-icon" src="/assets/menu.svg" />
+          <img onClick={this.toggleMenu} id="menu-icon" src="https://cdn.jsdelivr.net/gh/davidsdevel/lettercms-cdn/public/assets/menu.svg" />
           <div id="input" style={{ background: inputBackground }}>
-            <img className="inline" onClick={this.toggleSearch} style={{ float: 'left' }} src="/assets/search.svg" />
+            <img className="inline" onClick={this.toggleSearch} style={{ float: 'left' }} src="https://cdn.jsdelivr.net/gh/davidsdevel/lettercms-cdn/public/assets/search.svg" />
             <input onKeyUp={this.find} value={search} className="inline search" style={inputStyle} type="text" placeholder="Busqueda" onInput={this.handleInput} />
-            <Link href={`/search?q=${search}`} as={`/search?q=${search}`}>
-              <a onClick={() => FB.AppEvents.logEvent('Search')}>
-                <img className="inline" id="arrow" style={{ ...arrowStyle, float: 'right' }} src="/assets/arrow.svg" />
+            <Link preload={false} href={`/search?q=${search}`}>
+              <a>
+                <img className="inline" id="arrow" style={{ ...arrowStyle, float: 'right' }} src="https://cdn.jsdelivr.net/gh/davidsdevel/lettercms-cdn/public/assets/arrow.svg" />
               </a>
             </Link>
           </div>
@@ -182,17 +182,17 @@ class Nav extends Component {
         <div id="shadow" style={shadowStyle} onClick={this.toggleMenu} />
         <ul id="menu" style={menuStyle}>
           <button style={{ float: 'right' }} onClick={this.toggleMenu}>
-            <img src="/assets/cross.svg" />
+            <img src="https://cdn.jsdelivr.net/gh/davidsdevel/lettercms-cdn/public/assets/cross.svg" />
           </button>
-          <img src="/images/davidsdevel-black.png" />
+          <img src="https://cdn.jsdelivr.net/gh/davidsdevel/lettercms-cdn/public/images/davidsdevel-black.png" />
           <li>
-            <Link href='/'>
+            <Link preload={false} href='/'>
               <a onClick={this.toggleMenu}>Inicio</a>
             </Link>
           </li>
           {links.map(({ key, href, label }) => (
             <li key={key}>
-              <Link href={href}>
+              <Link preload={false} href={href}>
                 <a onClick={this.toggleMenu}>{label}</a>
               </Link>
             </li>
