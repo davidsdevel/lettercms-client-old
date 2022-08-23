@@ -14,7 +14,7 @@ const CustomErrorComponent = props => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <div id="container">
-      <img layout='fill' alt='' src="/assets/404.svg" />
+      <img layout='fill' alt='' src="https://cdn.jsdelivr.net/gh/davidsdevel/lettercms-cdn/public/assets/404.svg" />
       <div>
         <p>Parece que estamos teniendo problemas</p>
         <span>
