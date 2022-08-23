@@ -8,7 +8,7 @@ let mongo = connection.mongoose;
 async function Preview(req, res) {
   const {id} = req.query;
   
-  const hostname = req.getHeaders().host;
+  const hostname = req.host;
 
   const subdomain = process.env.NODE_ENV === 'production' && process.env.VERCEL === '1' ? hostname.replace('.lettercms-client.vercel.app', '') : hostname.replace('.localhost:3002', '');
   
