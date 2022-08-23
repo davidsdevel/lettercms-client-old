@@ -22,7 +22,7 @@ export default function middleware(req) {
       : hostname.replace('.localhost:3002', '');
 
 
-  const isPreview = req.cookies.get('__next_preview_data ') || req.cookies.get('__prerender_bypass ');
+  const isPreview = req.cookies.get('__next_preview_data') || req.cookies.get('__prerender_bypass');
 
   if (url.pathname === '/feed') {
     url.pathname = '/api/feed?subdomain='+currentHost;
