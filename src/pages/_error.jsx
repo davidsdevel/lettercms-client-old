@@ -14,7 +14,7 @@ const CustomErrorComponent = props => {
       <link rel="icon" href="/favicon.ico" />
     </Head>
     <div id="container">
-      <img layout='fill' alt='' src="https://cdn.jsdelivr.net/gh/davidsdevel/lettercms-cdn/public/assets/404.svg" />
+      <img layout='fill' alt='' src="https://cdn.jsdelivr.net/gh/davidsdevel/lettercms-cdn/public/assets/error.svg" />
       <div>
         <p>Parece que estamos teniendo problemas</p>
         <span>
@@ -23,24 +23,20 @@ const CustomErrorComponent = props => {
         </span>
       </div>
     </div>
-    <style jsx>
-      {`
-    #container {
-      text-align: center;
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-evenly;
-      align-items: center;
-      background: #f7f7f7;
-    }
-    #container img {
-      width: 150px;
-    }
-  `}
-    </style>
+    <style jsx>{`
+      #container {
+        padding: 1rem 0;
+        text-align: center;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+        background: #f7f7f7;
+      }
+    `}</style>
   </div>;
 };
 
