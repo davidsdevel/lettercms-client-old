@@ -10,17 +10,17 @@ import {useEffect} from 'react';
  const Post = props => {
     const {
       post: {
-        images,
-        content,
-        title,
-        tags,
-        updated,
-        published,
-        description,
-        category,
+        images = [],
+        content = '',
+        title = '',
+        tags = [],
+        updated = new Date().toISOString(),
+        published = new Date().toISOString(),
+        description = '',
+        category = '',
         author,
-        thumbnail,
-        url
+        thumbnail = '',
+        url = ''
       },
       status,
       isSubscribe = false,
