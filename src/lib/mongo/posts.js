@@ -27,7 +27,7 @@ export async function getPreviewPost(id, subdomain) {
       }
     });
 
-    const similars = await model.find({_id: {$ne: id}, subdomain, postStatus: 'published'}, 'title description thumbnail views comments', {lean: true, sort: {published: -1}, limit: 2});
+    const similars = await posts.find({_id: {$ne: id}, subdomain, postStatus: 'published'}, 'title description thumbnail views comments', {lean: true, sort: {published: -1}, limit: 2});
 
     return {
       blog: blogData,
