@@ -12,14 +12,14 @@ import {useEffect} from 'react';
       post: {
         images = [],
         content = '',
-        title = '',
+        title = 'Este deberia ser el titulo que olvidaste colocar',
         tags = [],
         updated = new Date().toISOString(),
         published = new Date().toISOString(),
-        description = '',
-        category = '',
+        description = 'Esta la descripcion que olvidaste colocar',
+        category,
         author,
-        thumbnail = '',
+        thumbnail,
         url = ''
       },
       status,
