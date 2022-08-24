@@ -8,15 +8,15 @@ import Banners from '@/components/banners';
 import {useEffect} from 'react';
 
  const Post = props => {
+   const date = new Date();
+   const defaultDate = date.toISOString(); 
     const {
       post: {
         images = [],
         content = '',
-        title = 'Este deberia ser el titulo que olvidaste colocar',
         tags = [],
-        updated = new Date().toISOString(),
-        published = new Date().toISOString(),
-        description = 'Esta la descripcion que olvidaste colocar',
+        updated = defaultDate,
+        published = defaultDate,
         category,
         author,
         thumbnail,
@@ -27,6 +27,9 @@ import {useEffect} from 'react';
       origin,
       blog,
     } = props;
+
+    const title = props.title || 'Este deberia ser el titulo que olvidaste colocar';
+    const descripcion = props.descripcion || 'Esta la descripcion que olvidaste colocar';
 
     useEffect(() => {
       let lazyImages = [].slice.call(document.querySelectorAll('img.lazy-img'));
