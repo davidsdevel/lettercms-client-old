@@ -12,30 +12,39 @@ import '@/styles/global.css';
 const CustomApp = ({pageProps, Component}) => {
   const [showLoad, setLoad] = useState(false);
   const [tracingInit, setTracing] = useState(false);
-  const router = useRouter(); 
+  const router = useRouter();
 
   useEffect(() => {
-    if (pageProps.accessToken)
+    if (pageProps.accessToken) {
+
       sdk.setAccessToken(pageProps.accessToken);
+      
+      setView();
+
+      if (!pageProps.notFound && !tracingInit) {
+        sdk.stats.startTrace();
+        setTracing(true);
+      }
+    }
   }, [pageProps.accessToken]);
 
   function setView() {
-    if (pageProps.notFound)
+    if (!pageProps.accessToken || router.preview || pageProps.notFound)
       return;
 
     try {
       const {post} = router.query;
 
-      sdk.stats.setView('/', document.referrer);
+      const url = post?.[post?.length - 1];
+
+      sdk.stats.setView(url || '/', document.referrer);
+
     } catch (err) {
       throw err;
     }
   }
 
   useEffect(() => {
-    if (pageProps.accessToken)
-      sdk.setAccessToken(pageProps.accessToken);
-
     /*const UID = Cookies.get('userID');
     if (!UID) {
       sdk.createRequest('/user','POST', {
@@ -45,13 +54,6 @@ const CustomApp = ({pageProps, Component}) => {
       });
     }*/
 
-    setView();
-
-    if (!pageProps.notFound && !tracingInit) {
-      sdk.stats.startTrace();
-      setTracing(true);
-    }
-    
     const html = document.getElementsByTagName('html')[0];
 
     router.events.on('routeChangeStart', () => {
@@ -61,18 +63,11 @@ const CustomApp = ({pageProps, Component}) => {
     });
 
     router.events.on('routeChangeComplete', () => {
-      setView();
-
       window.scrollTo(0, 0);
       html.style.scrollBehavior = 'smooth';
 
       setLoad(false);
-
-
-
     });
-
-
   }, []);
 
   if (router.isFallback)
