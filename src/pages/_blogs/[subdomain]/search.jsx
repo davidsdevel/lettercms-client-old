@@ -1,7 +1,5 @@
 import {useState, useEffect} from 'react';
-import {existsBlog} from '@/lib/mongo/blogs';
-import jwt from 'jsonwebtoken';
-
+import {getSearch} from '@/lib/mongo/search';
 import sdk from '@lettercms/sdk';
 import Router from 'next/router';
 //import Input from '@/components/input';
@@ -108,23 +106,10 @@ const Search = ({q, accessToken}) => {
   </div>;
 };
 
-export async function getServerSideProps({req, res, query: {q, subdomain}}) {
-  const _existsBlog = await existsBlog(subdomain);
+export async function getServerSideProps(ctx) {
+  const searchData = await getSearch(ctx)
 
-  if (_existsBlog)
-    return {
-      props: {
-        q,
-        accessToken: jwt.sign({subdomain}, process.env.JWT_AUTH)
-      }
-    }
-
-  return {
-    redirect: {
-      permanent: true,
-      destination: 'https://lettercms.vercel.app'
-    }
-  }
+  return searchData;
 }
 
 export default Search;

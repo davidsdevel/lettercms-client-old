@@ -1,5 +1,5 @@
 import Home from '@/components/index';
-import {getBlog, getSubdomains} from '@/lib/mongo/blogs';
+import {getBlog} from '@/lib/mongo/blogs';
 
 export async function getStaticProps({params: {subdomain}}) {
   try {
