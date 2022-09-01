@@ -25,8 +25,6 @@ export async function getStaticProps({params: {subdomain}}) {
     }
 }
 export async function getStaticPaths() {
-  const paths = await getSubdomains();
-
   return {
     paths: [],
     fallback: true,

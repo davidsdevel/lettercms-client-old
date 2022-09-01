@@ -32,7 +32,6 @@ export async function getStaticProps({params: {subdomain, post, userID}}) {
     }
 }
 export async function getStaticPaths() {
-
   return {
     paths: [],
     fallback: true,
