@@ -1,5 +1,6 @@
 import connection from '@lettercms/utils/lib/connection';
 import modelFactory from '@lettercms/models';
+import accountSchema from '@lettercms/models/accounts/schema/account';
 import jwt from 'jsonwebtoken';
 
 let mongo = connection.mongoose;
@@ -11,8 +12,10 @@ export async function getPreviewPost(id, subdomain) {
 
       mongo = connection.mongoose;
     }
+
     
-    const {blogs, posts} = modelFactory(mongo, ['blogs', 'posts', 'accounts']);
+    const {blogs, posts} = modelFactory(mongo, ['blogs', 'posts']);
+    mongo.model('BlogAccount', accountSchema);
 
     const blogData = await blogs.findOne({subdomain}, 'title', {lean: true});
 
@@ -70,7 +73,9 @@ export async function getPost(subdomain, paths, userID) {
 
   const url = paths[paths.length - 1];
 
-  const {blogs, posts, users: {Ratings}} = modelFactory(mongo, ['accounts','blogs', 'posts', 'ratings']);
+  const {blogs, posts, users: {Ratings}} = modelFactory(mongo, ['blogs', 'posts', 'ratings']);
+  mongo.model('BlogAccount', accountSchema);
+
   const blogData = await blogs.findOne({subdomain}, 'title url mainUrl', {lean: true});
 
   if (!blogData)
