@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {existsBlog} from '@/lib/mongo/blog';
+import {existsBlog} from '@/lib/mongo/blogs';
 import jwt from 'jsonwebtoken';
 
 import sdk from '@lettercms/sdk';
