@@ -17,8 +17,8 @@ const CustomErrorComponent = props => {
       <img layout='fill' alt='' src="https://cdn.jsdelivr.net/gh/davidsdevel/lettercms-cdn/public/assets/error.svg" />
       <div>
         <p>Parece que estamos teniendo problemas</p>
+        <p>Por suerte nuestro equipo ya esta informado.</p>
         <span>
-          Por suerte nuestro equipo ya esta informado.
           <Link href="/"><a> Inicio</a></Link>
         </span>
       </div>

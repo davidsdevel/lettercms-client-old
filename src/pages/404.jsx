@@ -32,9 +32,6 @@ const NotFound = () => (
       align-items: center;
       background: #f7f7f7;
     }
-    #container img {
-      width: 150px;
-    }
   `}
     </style>
   </div>

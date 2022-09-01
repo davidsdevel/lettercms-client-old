@@ -61,15 +61,17 @@ export async function getUrls() {
   }));
 }
 
-export async function getPost(subdomain, url, userID) {
+export async function getPost(subdomain, paths, userID) {
   if (!mongo) {
     await connection.connect();
 
     mongo = connection.mongoose;
   }
 
+  const url = paths[paths.length - 1];
+
   const {blogs, posts, users: {Ratings}} = modelFactory(mongo, ['accounts','blogs', 'posts', 'ratings']);
-  const blogData = await blogs.findOne({subdomain}, 'title', {lean: true});
+  const blogData = await blogs.findOne({subdomain}, 'title url mainUrl', {lean: true});
 
   if (!blogData)
     return Promise.resolve({
@@ -78,20 +80,9 @@ export async function getPost(subdomain, url, userID) {
       }
     });
 
-  const postData = await posts.findOne({
-    subdomain,
-    url
-  },
-  'images url content title tags postStatus updated category description published authorEmail thumbnail',
-  {
-    lean: true,
-    populate: {
-      path: 'author',
-      select: 'name lastname description photo facebook twitter instagram linkedin website'
-    }
-  });
-
-  if (postData?.postStatus !== 'published')
+  const isValidUrl = await validyUrl(subdomain, paths)
+  
+  if (!isValidUrl)
     return Promise.resolve({
       blog: {
         notFound: false
@@ -100,6 +91,19 @@ export async function getPost(subdomain, url, userID) {
         notFound: true
       }
     });
+
+  const postData = await posts.findOne({
+    subdomain,
+    url
+  },
+  'images url content title tags postStatus updated category description published author thumbnail',
+  {
+    lean: true,
+    populate: {
+      path: 'author',
+      select: 'name lastname description photo facebook twitter instagram linkedin website'
+    }
+  });
 
   const hasTags = postData.tags && postData.tags?.length > 0;
 
@@ -121,6 +125,23 @@ export async function getPost(subdomain, url, userID) {
       actual: postData._id,
       similar: similar._id
     });
+
+  postData.fullUrl = generateFullUrl({
+    ...postData,
+    urlID: blogData.url,
+    basePath: blogData.mainUrl
+  });
+  recommended.fullUrl = generateFullUrl({
+    ...recommended,
+    urlID: blogData.url,
+    basePath: blogData.mainUrl
+  });
+  similar.fullUrl = generateFullUrl({
+    ...similar,
+    urlID: blogData.url,
+    basePath: blogData.mainUrl
+  });
+
 
   if (recommended)
     recommended._id = recommended._id.toString();
@@ -214,3 +235,49 @@ async function getRecommended(model, userID, {
 
   return Promise.resolve(rated.post);
 }
+
+async function validyUrl(subdomain, paths) {
+  const url = paths[paths.length - 1];
+
+  const {blogs, posts} = modelFactory(mongo, ['blogs', 'posts']);
+  
+  const post = await posts.findOne({subdomain, url}, 'published category postStatus', {lean: true});
+  
+  if (post?.postStatus !== 'published')
+    return Promise.resolve(false);
+
+  const blog = await blogs.findOne({subdomain}, 'mainUrl url', {lean: true});
+
+  const fullUrl = generateFullUrl({
+    url,
+    published: post.published,
+    urlID: blog.url,
+    basePath: blog.mainUrl,
+    category: post.category
+  });
+
+  const fullPath =`/${paths.join('/')}`;
+
+  if (fullPath === fullUrl)
+    return Promise.resolve(true);
+
+  return Promise.resolve(false);
+}
+
+function generateFullUrl({url, urlID, published, basePath, category}) {
+  if (urlID == '1')
+    return `${basePath}/${url}`;
+
+  if (urlID == '2')
+    return `${basePath}/${data.category}/${url}`;
+
+  const year = published.getFullYear();
+  const month = published.getMonth() + 1;
+
+  if (urlID == '3')
+    return `${basePath}/${year}/${month}/${url}`;
+
+  const date = published.getDate();
+
+  return `${basePath}/${year}/${month}/${date}/${url}`;
+};

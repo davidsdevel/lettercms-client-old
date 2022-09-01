@@ -4,6 +4,18 @@ import jwt from 'jsonwebtoken';
 
 let mongo = connection.mongoose;
 
+export async function existsBlog(subdomain) {
+  if (!mongo) {
+    await connection.connect();
+
+    mongo = connection.mongoose;
+  }
+
+  const {blogs} = modelFactory(mongo, ['blogs']);
+
+  return blogs.exists({subdomain});
+}
+
 export async function getSubdomains() {
   if (!mongo) {
     await connection.connect();
@@ -54,7 +66,7 @@ export async function getRecommended(subdomain, userID) {
     mongo = connection.mongoose;
   }
 
-  const {blogs, users: {Ratings}} = modelFactory(mongo, ['blogs', 'ratings', '']);
+  const {blogs, users: {Ratings}} = modelFactory(mongo, ['blogs', 'ratings', 'posts']);
 
   const blog = await blogs.findOne({subdomain}, 'categories description title url', {lean: true});
 

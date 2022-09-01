@@ -9,7 +9,7 @@ export async function getStaticProps({params: {subdomain, post, userID}}) {
         return {
           redirect: {
             permanent: true,
-            destination: process.env.DASHBOARD_DOMAIN
+            destination: 'https://lettercms.vercel.app'
           }
         };
 
