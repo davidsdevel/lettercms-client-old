@@ -1,6 +1,8 @@
 import connection from '@lettercms/utils/lib/connection';
-import modelFactory from '@lettercms/models';
 import accountSchema from '@lettercms/models/accounts/schema/account';
+import postSchema from '@lettercms/models/posts/schema/posts';
+import blogSchema from '@lettercms/models/blogs/schema/blogs';
+import ratingSchema from '@lettercms/models/users/schema/ratings';
 import jwt from 'jsonwebtoken';
 
 let mongo = connection.mongoose;
@@ -13,12 +15,11 @@ export async function getPreviewPost(id, subdomain) {
       mongo = connection.mongoose;
     }
 
-    
-    const {blogs, posts} = modelFactory(mongo, ['blogs', 'posts']);
     mongo.model('BlogAccount', accountSchema);
+    const blogs = mongo.model('Blogs', blogSchema);
+    const posts = mongo.model('BlogPosts', postSchema);
 
     const blogData = await blogs.findOne({subdomain}, 'title', {lean: true});
-
 
     const postsData = await posts.findById(id,
     'images url content title tags postStatus updated category description published authorEmail thumbnail',
@@ -50,7 +51,7 @@ export async function getUrls() {
     mongo = connection.mongoose;
   }
 
-  const {posts} = modelFactory(mongo, ['posts']);
+  const posts = mongo.model('BlogPosts', postSchema);
 
   const postData = await posts.find({postStatus: 'published', subdomain: 'davidsdevel'}, 'url subdomain', {lean: true, limit: 100});
 
@@ -72,9 +73,11 @@ export async function getPost(subdomain, paths, userID) {
   }
 
   const url = paths[paths.length - 1];
-
-  const {blogs, posts, users: {Ratings}} = modelFactory(mongo, ['blogs', 'posts', 'ratings']);
+  
   mongo.model('BlogAccount', accountSchema);
+  const blogs = mongo.model('Blogs', blogSchema);
+  const posts = mongo.model('BlogPosts', postSchema);
+  const Ratings = mongo.model('BlogRatings', ratingSchema);
 
   const blogData = await blogs.findOne({subdomain}, 'title url mainUrl', {lean: true});
 
@@ -244,7 +247,8 @@ async function getRecommended(model, userID, {
 async function validyUrl(subdomain, paths) {
   const url = paths[paths.length - 1];
 
-  const {blogs, posts} = modelFactory(mongo, ['blogs', 'posts']);
+  const blogs = mongo.model('Blogs', blogSchema);
+  const posts = mongo.model('BlogPosts', postSchema);
   
   const post = await posts.findOne({subdomain, url}, 'published category postStatus', {lean: true});
   
