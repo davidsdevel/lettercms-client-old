@@ -1,16 +1,9 @@
 import { NextResponse } from 'next/server';
 
-export const config = {
-  matcher: [
-    '/',
-    '/:path*',
-  ]
-};
-
 export default function middleware(req) {
   const url = req.nextUrl;
 
-  if (url.pathname.includes('_next')) {
+  if (url.pathname.startsWith('/_next')) {
 
    return NextResponse.next();
   }
