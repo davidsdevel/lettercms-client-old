@@ -1,23 +1,18 @@
-import {Letter} from '@lettercms/sdk';
-import jwt from 'jsonwebtoken';
-import {getSubdomain} from '../../lib/utils';
+import connect from '@/lib/mongo/connect';
 import { withSentry } from '@sentry/nextjs';
+import modelFactory from '@lettercms/models';
 
 async function Manifest(req, res) {
   const hostname = req.headers.host;
   const subdomain = process.env.NODE_ENV === 'production' && process.env.VERCEL === '1' ? hostname.replace('.lettercms-client.vercel.app', '') : hostname.replace('.localhost:3002', '');
 
-  const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
+  const mongo = await connect();
+  const {blogs} = modelFactory(mongo, ['blogs']);
 
-  const sdk = new Letter(token);
+  const {title, description, customDomain} = await blogs.findOne({subdomain}, 'description title customDomain', {lean: true});
 
-  const {title, description, customDomain} = await sdk.blogs.single([
-    'description',
-    'title',
-    'customDomain'
-  ]);
   res.json({
-    start_url: customDomain || `https://lettercms-client-davidsdevel.vercel.app/${subdomain}`,
+    start_url: customDomain || `https://${subdomain}.lettercms.vercel.app`,
     description,
     icons: [{ src: '/touch-icon.png', sizes: '192x192', type: 'image/png' }],
     name: title,
