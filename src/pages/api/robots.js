@@ -1,21 +1,15 @@
-import {Letter} from '@lettercms/sdk';
-import jwt from 'jsonwebtoken';
-import {getSubdomain} from '@/lib/utils';
+import connect from '@/lib/mongo/connect';
+import modelFactory from '@lettercms/models';
 import { withSentry } from '@sentry/nextjs';
 
-function Robots(req, res) {
+async function Robots(req, res) {
   const hostname = req.headers.host;
-  const subdomain = process.env.NODE_ENV === 'production' && process.env.VERCEL === '1' ? hostname.replace('.lettercms-client.vercel.app', '') : hostname.replace('.localhost:3002', '');
+  const subdomain = process.env.NODE_ENV === 'production'  ? hostname.replace('.lettercms.vercel.app', '') : hostname.replace('.localhost:3002', '');
 
-  const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
-  const sdk = new Letter(token);
+  const mongo = await connect();
+  const {blogs} = modelFactory(mongo, ['blogs']);
 
-  const blog = sdk.blogs.single([
-    'customDomain',
-    'hasCustomRobots',
-    'isVisible',
-    'robots'
-  ]);
+  const blog = await blogs.findOne({subdomain}, 'customDomain hasCustomRobots isVisible robots', {lean: true});
 
   let robots;
 
@@ -28,7 +22,7 @@ function Robots(req, res) {
         Disallow: /feed
         Allow: /
 
-        Sitemap: https://${blog.customDomain || `https://lettercms-client-davidsdevel.vercel.app/${subdomain}`}/sitemap.xml`;
+        Sitemap: https://${blog.customDomain || subdomain + '.lettercms.vercel.app'}/sitemap.xml`;
     }
     else
       robots = `User-agent: *

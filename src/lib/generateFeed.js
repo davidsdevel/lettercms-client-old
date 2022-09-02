@@ -6,7 +6,7 @@ import {Feed} from 'feed';
 export default async function feed(req, res) {
     try {
       const hostname = req.headers.host;
-      const subdomain = process.env.NODE_ENV === 'production' && process.env.VERCEL === '1' ? hostname.replace('.lettercms-client.vercel.app', '') : hostname.replace('.localhost:3002', '');
+      const subdomain = process.env.NODE_ENV === 'production'  ? hostname.replace('.lettercms.vercel.app', '') : hostname.replace('.localhost:3002', '');
 
       const token = jwt.sign({subdomain}, process.env.JWT_AUTH);
       const sdk = new Letter(token);

@@ -8,8 +8,7 @@ async function Preview(req, res) {
   const {id} = req.query;
   
   const hostname = req.headers.host;
-
-  const subdomain = process.env.NODE_ENV === 'production' && process.env.VERCEL === '1' ? hostname.replace('.lettercms-client.vercel.app', '') : hostname.replace('.localhost:3002', '');
+  const subdomain = process.env.NODE_ENV === 'production'  ? hostname.replace('.lettercms.vercel.app', '') : hostname.replace('.localhost:3002', '');
   
   if (!id || !subdomain) {
     return res.status(401).json({ message: 'Invalid ID' });
