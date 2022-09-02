@@ -100,8 +100,10 @@ class Card extends Component {
   render() {
     const {
       content,
+      subdomain,
       title,
       url,
+      fullUrl,
       comments,
       ID,
       thumbnail,
@@ -117,7 +119,7 @@ class Card extends Component {
 
     return (
       <div className="blog-card">
-        <Link href={url}>
+        <Link href={fullUrl}>
           <a>
             { !!thumbnail
               ? <div className="card-header-image" style={{ backgroundImage: `url(${thumbnail})` }} />
@@ -155,10 +157,10 @@ class Card extends Component {
             </div>
           </div>
           <div>
-            <button className="view-more" onClick={() => Router.push(url)}>Ver Mas</button>
+            <button className="view-more" onClick={() => Router.push(fullUrl)}>Ver Mas</button>
             <button className="share" onFocus={this.toggleShare} onBlur={this.toggleShare}>Compartir</button>
           </div>
-          <Share style={{ opacity: shareOpacity, display: shareDisplay }} title={title} url={`https://blog.davidsdevel.com${url}`} />
+          <Share style={{ opacity: shareOpacity, display: shareDisplay }} title={title} url={`https://lettercms.vercel.app${url}`} />
         </div>
         <style jsx>
           {`
