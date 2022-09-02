@@ -7,7 +7,7 @@ async function Post(req, res) {
 
   const {paths, userID} = req.query;
 
-  const hostname = req.headers.host;
+  const hostname = req.headers.host || req.host;
   const subdomain = process.env.NODE_ENV === 'production' && process.env.VERCEL === '1' ? hostname.replace('.lettercms-client.vercel.app', '') : hostname.replace('.localhost:3002', '');
 
   const post = paths.split(',');
