@@ -28,8 +28,8 @@ import {useEffect} from 'react';
       blog,
     } = props;
 
-    const title = props.title || 'Este deberia ser el titulo que olvidaste colocar';
-    const descripcion = props.descripcion || 'Esta la descripcion que olvidaste colocar';
+    const title = props.post.title || 'Este deberia ser el titulo que olvidaste colocar';
+    const description = props.post.description || 'Esta la descripcion que olvidaste colocar';
 
     useEffect(() => {
       let lazyImages = [].slice.call(document.querySelectorAll('img.lazy-img'));
