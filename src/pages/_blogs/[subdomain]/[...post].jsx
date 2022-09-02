@@ -1,13 +1,11 @@
-import {getPost, getUrls} from '@/lib/mongo/posts';
 import Post from '@/components/post';
+
 
 export async function getStaticProps({params: {subdomain, post}}) {
   try {
-    console.log(post)
-      const d = await getPost(subdomain, post);
-    console.log(d)
-      
-      const {blog, post: _post, recommended, similar, accessToken} = d;
+
+    const res = await fetch(`/api/blog/post?paths=${post.join(',')}`)
+    const {blog, post: _post, recommended, similar, accessToken} = await res.json();
       
       if (blog.notFound)
         return {
