@@ -55,7 +55,7 @@ const Search = ({q, accessToken}) => {
     <Head>
       <title>Busqueda {q ? `"${q}" ` : ''}| LetterCMS</title>
     </Head>
-    <img src='/assets/no-search.svg' id='search-img'/>
+    <img src='https://cdn.jsdelivr.net/gh/davidsdevel/lettercms-cdn/public/assets/no-search.svg' id='search-img'/>
     <div id='form-container'>
       <form onSubmit={e => {e.preventDefault(); if (!query) {return;}Router.push(`/search?q=${query}`);}}>
         <input id='q' value={query} onChange={({target: {value}}) => setQuery(value)} placeholder='Termino'/>
