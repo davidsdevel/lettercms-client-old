@@ -1,19 +1,13 @@
-import connection from '@lettercms/utils/lib/connection';
+import connect from './connect';
 import accountSchema from '@lettercms/models/accounts/schema/account';
 import postSchema from '@lettercms/models/posts/schema/posts';
 import blogSchema from '@lettercms/models/blogs/schema/blogs';
 import ratingSchema from '@lettercms/models/users/schema/ratings';
 import jwt from 'jsonwebtoken';
 
-let mongo = connection.mongoose;
-
 export async function getPreviewPost(id, subdomain) {
   try {
-    if (!mongo) {
-      await connection.connect();
-
-      mongo = connection.mongoose;
-    }
+    const mongo = await connect();
 
     mongo.model('BlogAccount', accountSchema);
     const blogs = mongo.model('Blogs', blogSchema);
@@ -45,11 +39,7 @@ export async function getPreviewPost(id, subdomain) {
 
 }
 export async function getUrls() {
-    if (!mongo) {
-    await connection.connect();
-
-    mongo = connection.mongoose;
-  }
+  const mongo = await connect();
 
   const posts = mongo.model('BlogPosts', postSchema);
 
@@ -66,11 +56,7 @@ export async function getUrls() {
 }
 
 export async function getPost(subdomain, paths, userID) {
-  if (!mongo) {
-    await connection.connect();
-
-    mongo = connection.mongoose;
-  }
+  const mongo = await connect();
 
   const url = paths[paths.length - 1];
   
@@ -221,7 +207,7 @@ async function getRecommended(model, userID, {
   actual,
   similar
 }) {
-  const rated = await Ratings.findOne({
+  const rated = await model.findOne({
       subdomain,
       $and: [
         {post: {$ne: actual}},
@@ -245,6 +231,8 @@ async function getRecommended(model, userID, {
 }
 
 async function validyUrl(subdomain, paths) {
+  const mongo = await connect();
+
   const url = paths[paths.length - 1];
 
   const blogs = mongo.model('Blogs', blogSchema);

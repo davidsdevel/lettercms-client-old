@@ -3,17 +3,20 @@ import { NextResponse } from 'next/server';
 export const config = {
   matcher: [
     '/',
-    '/([^/.]*)', 
-    '/_blogs/:path*', 
-    '/_recommendations/:path*',
-    '/_preview/:path*'
-  ],
+    '/:path*',
+  ]
 };
 
 export default function middleware(req) {
   const url = req.nextUrl;
+  console.log(url.pathname)
 
+  if (url.pathname.includes('_next')) {
+
+   return NextResponse.next();
+  }
   // Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000)
+  console.log(req);
   const hostname = req.headers.get('host') || 'davidsdevel.lettercms.vercel.app';
 
   const currentHost =
@@ -40,8 +43,10 @@ export default function middleware(req) {
     url.pathname = '/api/manifest?subdomain='+currentHost;
     return NextResponse.rewrite(url);
   }
-  if (url.pathname === '/api/preview') {
-    return url;
+  if (url.pathname === '/api/preview' || url.pathname.includes('.')) {
+    console.log(url.pathname)
+
+   return url;
   }
 
   if (isPreview) {

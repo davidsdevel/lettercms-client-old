@@ -3,7 +3,10 @@ import Post from '@/components/post';
 
 export async function getStaticProps({params: {subdomain, post}}) {
   try {
+    console.log(post)
       const d = await getPost(subdomain, post);
+    console.log(d)
+      
       const {blog, post: _post, recommended, similar, accessToken} = d;
       
       if (blog.notFound)

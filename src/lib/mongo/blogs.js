@@ -1,27 +1,17 @@
-import connection from '@lettercms/utils/lib/connection';
+import conect from './connect';
 import modelFactory from '@lettercms/models';
 import jwt from 'jsonwebtoken';
 
-let mongo = connection.mongoose;
-
 export async function existsBlog(subdomain) {
-  if (!mongo) {
-    await connection.connect();
-
-    mongo = connection.mongoose;
-  }
-
+  const mongo = await connect();
+  
   const {blogs} = modelFactory(mongo, ['blogs']);
 
   return blogs.exists({subdomain});
 }
 
 export async function getSubdomains() {
-  if (!mongo) {
-    await connection.connect();
-
-    mongo = connection.mongoose;
-  }
+  const mongo = await connect();
 
   const {blogs} = modelFactory(mongo, ['blogs']);
 
@@ -31,11 +21,7 @@ export async function getSubdomains() {
 }
 
 export async function getBlog(subdomain, page) {
-  if (!mongo) {
-    await connection.connect();
-
-    mongo = connection.mongoose;
-  }
+  const mongo = await connect();
 
   const {blogs, posts} = modelFactory(mongo, ['blogs', 'posts']);
   const blogData = await blogs.findOne({subdomain}, 'categories description title url', {lean: true});
@@ -60,11 +46,7 @@ export async function getBlog(subdomain, page) {
 }
 
 export async function getRecommended(subdomain, userID) {
-  if (!mongo) {
-    await connection.connect();
-
-    mongo = connection.mongoose;
-  }
+  const mongo = await connect();
 
   const {blogs, users: {Ratings}} = modelFactory(mongo, ['blogs', 'ratings', 'posts']);
 
