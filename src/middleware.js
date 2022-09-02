@@ -3,7 +3,24 @@ import { NextResponse } from 'next/server';
 export default function middleware(req) {
   const url = req.nextUrl;
 
-  if (url.pathname.startsWith('/_next') || url.pathname.startsWith('/api')) {
+  if (url.pathname === '/feed') {
+    url.pathname = '/api/feed';
+    return NextResponse.rewrite(url);
+  }
+  if (url.pathname === '/sitemap.xml') {
+    url.pathname = '/api/sitemap';
+    return NextResponse.rewrite(url);
+  }
+  if (url.pathname === '/robots.txt') {
+    url.pathname = '/api/robots';
+    return NextResponse.rewrite(url);
+  }
+  if (url.pathname === '/manifest.json') {
+    url.pathname = '/api/manifest';
+    return NextResponse.rewrite(url);
+  }
+
+  if (url.pathname.startsWith('/_next') || url.pathname.startsWith('/api') || url.pathname.includes('.')) {
 
    return NextResponse.next();
   }
@@ -17,26 +34,6 @@ export default function middleware(req) {
 
 
   const isPreview = req.cookies.get('__next_preview_data') || req.cookies.get('__prerender_bypass');
-
-  if (url.pathname === '/feed') {
-    url.pathname = '/api/feed?subdomain='+currentHost;
-    return NextResponse.rewrite(url);
-  }
-  if (url.pathname === '/sitemap.xml') {
-    url.pathname = '/api/sitemap?subdomain='+currentHost;
-    return NextResponse.rewrite(url);
-  }
-  if (url.pathname === '/robots.txt') {
-    url.pathname = '/api/robots?subdomain='+currentHost;
-    return NextResponse.rewrite(url);
-  }
-  if (url.pathname === '/manifest.json') {
-    url.pathname = '/api/manifest?subdomain='+currentHost;
-    return NextResponse.rewrite(url);
-  }
-  if (url.pathname.includes('.')) {
-   return NextResponse.next();
-  }
 
   if (isPreview) {
     url.pathname = `/_preview/${currentHost}${url.pathname}`;
