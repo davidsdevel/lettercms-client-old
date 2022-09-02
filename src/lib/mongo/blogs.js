@@ -1,4 +1,4 @@
-import conect from './connect';
+import connect from './connect';
 import modelFactory from '@lettercms/models';
 import jwt from 'jsonwebtoken';
 

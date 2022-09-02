@@ -1,9 +1,8 @@
 import _sdk from '@lettercms/sdk';
-import connection from '@lettercms/utils/lib/connection';
+import connect from '@/lib/mongo/';
 import modelFactory from '@lettercms/models';
 import { withSentry } from '@sentry/nextjs';
 
-let mongo = connection.mongoose;
 
 async function Preview(req, res) {
   const {id} = req.query;
@@ -16,10 +15,7 @@ async function Preview(req, res) {
     return res.status(401).json({ message: 'Invalid ID' });
   }
 
-  if (!mongo) {
-    await connection.connect();
-    mongo = connection.mongoose;
-  }
+  const mongo = await connect();
     
   const {posts} = modelFactory(mongo, ['posts']);
 
