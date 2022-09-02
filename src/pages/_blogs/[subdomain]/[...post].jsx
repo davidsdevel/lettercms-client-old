@@ -4,7 +4,7 @@ import Post from '@/components/post';
 export async function getStaticProps({params: {subdomain, post}}) {
   try {
 
-    const res = await fetch(`/api/blog/post?paths=${post.join(',')}`)
+    const res = await fetch(`https://${subdomain}.lettercms.vercel.app/api/blog/post?paths=${post.join(',')}`)
     const {blog, post: _post, recommended, similar, accessToken} = await res.json();
       
       if (blog.notFound)
