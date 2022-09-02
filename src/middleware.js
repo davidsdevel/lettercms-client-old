@@ -42,8 +42,6 @@ export default function middleware(req) {
     return NextResponse.rewrite(url);
   }
   if (url.pathname === '/api/preview' || url.pathname.includes('.')) {
-    console.log(url.pathname)
-
    return NextResponse.next();
   }
 

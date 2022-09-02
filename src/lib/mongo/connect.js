@@ -28,9 +28,7 @@ async function dbConnect() {
     const opts = {
       bufferCommands: false,
       useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      useCreateIndex: true
+      useUnifiedTopology: true
     }
 
     cached.promise = mongoose.connect(MONGO_URL, opts).then((mongoose) => {
