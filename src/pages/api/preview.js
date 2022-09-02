@@ -1,5 +1,5 @@
 import _sdk from '@lettercms/sdk';
-import connect from '@/lib/mongo/';
+import connect from '@/lib/mongo/connect';
 import modelFactory from '@lettercms/models';
 import { withSentry } from '@sentry/nextjs';
 
