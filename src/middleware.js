@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export default function middleware(req) {
   const url = req.nextUrl;
 
-  if (url.pathname.startsWith('/_next')) {
+  if (url.pathname.startsWith('/_next') || url.pathname.startsWith('/api')) {
 
    return NextResponse.next();
   }
@@ -34,7 +34,7 @@ export default function middleware(req) {
     url.pathname = '/api/manifest?subdomain='+currentHost;
     return NextResponse.rewrite(url);
   }
-  if (url.pathname === '/api/preview' || url.pathname.includes('.')) {
+  if (url.pathname.includes('.')) {
    return NextResponse.next();
   }
 
