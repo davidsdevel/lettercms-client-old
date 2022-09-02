@@ -9,14 +9,12 @@ export const config = {
 
 export default function middleware(req) {
   const url = req.nextUrl;
-  console.log(url.pathname)
 
   if (url.pathname.includes('_next')) {
 
    return NextResponse.next();
   }
-  // Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000)
-  console.log(req);
+
   const hostname = req.headers.get('host') || 'davidsdevel.lettercms.vercel.app';
 
   const currentHost =
@@ -46,7 +44,7 @@ export default function middleware(req) {
   if (url.pathname === '/api/preview' || url.pathname.includes('.')) {
     console.log(url.pathname)
 
-   return url;
+   return NextResponse.next();
   }
 
   if (isPreview) {
