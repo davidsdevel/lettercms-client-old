@@ -7,7 +7,6 @@ const Pagination = dynamic(() => import('@/components/index/pagination'));
 const Recommended = dynamic(() => import('@/components/index/recommended'));
 
 const Posts = ({posts}) => {
-
   return<div id="main">
     <div id="posts-container">
       <span style={{ marginLeft: '5%', display: 'block' }}>Entradas</span>
