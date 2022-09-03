@@ -1,6 +1,7 @@
 import connect from './connect';
 import modelFactory from '@lettercms/models';
 import jwt from 'jsonwebtoken';
+import {generateFullUrl} from './posts';
 
 export async function getPathType(subdomain, paths) {
   const mongo = await connect();
@@ -80,7 +81,7 @@ export async function getBlog(subdomain, page) {
   const mongo = await connect();
 
   const {blogs, posts} = modelFactory(mongo, ['blogs', 'posts']);
-  const blogData = await blogs.findOne({subdomain}, 'categories description title url', {lean: true});
+  const blogData = await blogs.findOne({subdomain}, 'categories description title url mainUrl', {lean: true});
 
   if (!blogData)
     return Promise.resolve({
@@ -95,7 +96,11 @@ export async function getBlog(subdomain, page) {
     }});
 
   return Promise.resolve({
-    posts: postsData.map(({_id, ...e}) => ({...e, _id: _id.toString()})),
+    posts: postsData.map(e => {
+      e._id = e._id.toString();
+      e.fullUrl = generateFullUrl({...e, urlID: blogData.url, basePath: blogData.mainUrl});
+      return e;
+    }),
     blog: blogData,
     accessToken: jwt.sign({subdomain}, process.env.JWT_AUTH)
   });

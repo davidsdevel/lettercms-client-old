@@ -6,26 +6,26 @@ import dynamic from 'next/dynamic';
 const Pagination = dynamic(() => import('@/components/index/pagination'));
 const Recommended = dynamic(() => import('@/components/index/recommended'));
 
-
 const Posts = ({posts}) => {
 
-  return <div id="posts-container">
-    <span style={{ marginLeft: '5%', display: 'block' }}>Entradas</span>
-    {
-      posts.map(({
-        _id, description, title, images, url, fullUrl, comments, thumbnail, _as
-      }) => <Card
-          key={_id}
-          title={title}
-          content={description}
-          url={`/${url}`}
-          thumbnail={thumbnail}
-          comments={comments}
-          ID={url}
-          as={_as}
-        />
-      )
-    }
+  return<div id="main">
+    <div id="posts-container">
+      <span style={{ marginLeft: '5%', display: 'block' }}>Entradas</span>
+      {
+        posts.map(({
+          _id, description, title, images, url, fullUrl, comments, thumbnail, _as
+        }) => <Card
+            key={_id}
+            title={title}
+            content={description}
+            url={fullUrl}
+            thumbnail={thumbnail}
+            comments={comments}
+            ID={url}
+          />
+        )
+      }
+    </div>
   </div>;
 };
 
@@ -41,9 +41,7 @@ const Home = ({posts, blog}) => {
     */}
     {
       posts.length > 0
-        ? <div id="main">
-            <Posts posts={posts}/>
-          </div>
+        ? <Posts posts={posts}/>
         : <div id="entries">
             <span>No Hay Entradas</span>
           </div>

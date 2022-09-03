@@ -261,7 +261,7 @@ async function validyUrl(subdomain, paths) {
   return Promise.resolve(false);
 }
 
-function generateFullUrl({url, urlID, published, basePath, category}) {
+export function generateFullUrl({url, urlID, published, basePath, category}) {
   if (urlID == '1')
     return `${basePath}/${url}`;
 
