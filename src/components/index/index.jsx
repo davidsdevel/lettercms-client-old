@@ -13,7 +13,7 @@ const Posts = ({posts}) => {
       <span style={{ marginLeft: '5%', display: 'block' }}>Entradas</span>
       {
         posts.map(({
-          _id, description, title, images, url, fullUrl, comments, thumbnail, _as
+          _id, description, title, images, url, fullUrl, comments, thumbnail
         }) => <Card
             key={_id}
             title={title}
