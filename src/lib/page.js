@@ -17,7 +17,8 @@ export async function getPost(subdomain, paths) {
 }
 export async function getMain(subdomain) {
   try {
-    const blog = await getBlog(subdomain);
+    const res = await fetch(`https://${subdomain}.lettercms.vercel.app/api/blog`);
+    const blog = await res.json();
 
     return {
       props: {
