@@ -160,7 +160,7 @@ class Card extends Component {
             <button className="view-more" onClick={() => Router.push(fullUrl)}>Ver Mas</button>
             <button className="share" onFocus={this.toggleShare} onBlur={this.toggleShare}>Compartir</button>
           </div>
-          <Share style={{ opacity: shareOpacity, display: shareDisplay }} title={title} url={`https://lettercms.vercel.app${url}`} />
+          <Share style={{ opacity: shareOpacity, display: shareDisplay }} title={title} url={`https://${subdomain}.lettercms.vercel.app${fullUrl}`} />
         </div>
         <style jsx>
           {`
