@@ -10,12 +10,12 @@ export async function getSearch({req, res, query: {q, subdomain}}) {
         q,
         accessToken: jwt.sign({subdomain}, process.env.JWT_AUTH)
       }
-    }
+    };
 
   return {
     redirect: {
       permanent: true,
       destination: 'https://lettercms.vercel.app'
     }
-  }
+  };
 }

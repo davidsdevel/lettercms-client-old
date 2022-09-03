@@ -74,7 +74,7 @@ export async function getPost(subdomain, paths, userID) {
       }
     });
 
-  const isValidUrl = await validyUrl(subdomain, paths)
+  const isValidUrl = await validyUrl(subdomain, paths);
   
   if (!isValidUrl)
     return Promise.resolve({

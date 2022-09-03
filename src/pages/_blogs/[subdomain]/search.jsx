@@ -107,7 +107,7 @@ const Search = ({q, accessToken}) => {
 };
 
 export async function getServerSideProps(ctx) {
-  const searchData = await getSearch(ctx)
+  const searchData = await getSearch(ctx);
 
   return searchData;
 }

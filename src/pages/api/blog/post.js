@@ -17,4 +17,4 @@ async function Post(req, res) {
   res.json(d);
 }
 
-export default withSentry(Post)
+export default withSentry(Post);

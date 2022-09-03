@@ -7,4 +7,4 @@ async function Post(req, res) {
   res.json({headers: req.headers, cookies: req.cookies, host: req.host});
 }
 
-export default withSentry(Post)
+export default withSentry(Post);
