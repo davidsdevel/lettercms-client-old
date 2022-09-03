@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import {getPost, getMain} from '@/lib/page';
-import {getPathType} from '@/lib/mongo/blog';
+import {getPathType} from '@/lib/mongo/blogs';
 
 const Post = dynamic(() => import('@/components/post'), {
   ssr: true
