@@ -23,8 +23,8 @@ export async function getServerSideProps({query: {subdomain, paths}}) {
 }
 
 export default function PageWraper(props) {
-  if (props.pageType === 'main')
+  if (props.pathType === 'main')
     return <Home {...props}/>;
-  if (props.pageType === 'post')
+  if (props.pathType === 'post')
     return <Post {...props}/>;
 }
