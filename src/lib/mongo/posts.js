@@ -111,8 +111,11 @@ export async function getPost(subdomain, paths, userID) {
   const similar = similars[0];
   let recommended;
 
-  if (!userID)
+  if (!userID) {
     recommended = similars[1];
+    if (!recommended)
+      recommended = similars[0];
+  }
   else
     recommended = await getRecommended(Ratings, userID, {
       subdomain,
