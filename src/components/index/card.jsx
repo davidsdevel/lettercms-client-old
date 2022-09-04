@@ -66,7 +66,7 @@ class Card extends Component {
     }
   }
 
-  toggleShare() {
+  toggleShare = () => {
     this.setState({
       isShareOpen: !this.state.isShareOpen,
     });

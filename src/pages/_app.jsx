@@ -33,9 +33,9 @@ const CustomApp = ({pageProps, Component}) => {
       return;
 
     try {
-      const {post} = router.query;
+      const {paths} = router.query;
 
-      const url = post?.[post?.length - 1];
+      const url = paths?.[paths?.length - 1];
 
       sdk.stats.setView(url || '/', document.referrer);
 
@@ -88,7 +88,7 @@ const CustomApp = ({pageProps, Component}) => {
       showLoad
       && <Load />
     }
-    <Nav subdomain={router.query.subdomain}/>
+    <Nav subdomain={router.query.subdomain} main={pageProps.mainUrl}/>
     <Component {...pageProps} />
     <Footer title={pageProps.blog?.title}/>
   </div>;

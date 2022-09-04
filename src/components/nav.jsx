@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 
@@ -11,6 +11,7 @@ const links = [
 
 class Nav extends Component {
   state = {
+    main: '/',
     searchIsOpen: false,
     menuIsOpen: false,
     arrowStyle: {
@@ -108,6 +109,11 @@ class Nav extends Component {
   }
 
   componentDidMount = () => {
+    if (!this.props.main) {
+      fetch('/api/blog')
+        .then(e => e.json())
+        .then(e => this.setState({main: e.blog.mainUrl}));
+    }
     if (document.body.clientWidth >= 720) {
       this.setState({
         mobileBar: {
@@ -154,15 +160,13 @@ class Nav extends Component {
   find = ({ key }) => {
     if (key === 'Enter') {
       Router.push(`/search?q=${this.state.search}`);
-
-      FB.AppEvents.logEvent('Search');
     }
   }
 
   render() {
     const {props} = this;
     const {
-      mobileBar, inputBackground, inputStyle, search, menuStyle, shadowStyle, arrowStyle,
+      mobileBar, inputBackground, inputStyle, search, menuStyle, shadowStyle, arrowStyle, main
     } = this.state;
 
     return (
@@ -186,7 +190,7 @@ class Nav extends Component {
           </button>
           <img src="https://cdn.jsdelivr.net/gh/davidsdevel/lettercms-cdn/public/images/davidsdevel-black.png" />
           <li>
-            <Link preload={false} href='/'>
+            <Link preload={false} href={props.main || main}>
               <a onClick={this.toggleMenu}>Inicio</a>
             </Link>
           </li>

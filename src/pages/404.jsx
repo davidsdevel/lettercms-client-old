@@ -2,9 +2,18 @@ import Head from 'next/head';
 import Link from 'next/link';
 import connect from '@/lib/mongo/connect';
 import modelFactory from '@lettercms/models';
+import {useEffect, useState} from 'react';
 
-const NotFound = () => (
-  <div>
+const NotFound = ({base}) => {
+  const [main, setMain] = useState('/');
+
+  useEffect(() => {
+    fetch('/api/blog')
+      .then(e => e.json())
+      .then(e => setMain(e.blog.mainUrl));
+  }, []);
+
+  return <div>
     <Head>
       <meta charSet="utf-8" />
       <title>Ups. Lo sentimos</title>
@@ -17,7 +26,7 @@ const NotFound = () => (
         <p>Ups. No hay nada por aqui</p>
         <span>
           ¿Te perdiste? Bueno dejame llevarte hasta el
-          <Link href="/"><a> Inicio</a></Link>
+          <Link href={main}><a> Inicio</a></Link>
         </span>
       </div>
     </div>
@@ -37,21 +46,6 @@ const NotFound = () => (
   `}
     </style>
   </div>
-);
-
-export async function getServerSideProps({req, res}) {
-  const hostname = req.headers.host || req.host;
-  const subdomain = process.env.NODE_ENV === 'production'  ? hostname.replace('.lettercms.vercel.app', '') : hostname.replace('.localhost:3002', '');
-  const mongo = await connect();
-
-  const {blogs} = modelFactory(mongo, ['blogs']);
-  const blogData = await blogs.findOne({subdomain}, 'mainUrl', {lean: true});
-
-  return {
-    props: {
-      base: blogData.mainUrl
-    }
-  }
-}
+};
 
 export default NotFound;
