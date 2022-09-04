@@ -3,7 +3,7 @@ import modelFactory from '@lettercms/models';
 import jwt from 'jsonwebtoken';
 import {generateFullUrl} from './posts';
 
-export async function getPathType(subdomain, paths) {
+export async function getPathType(subdomain, paths = []) {
   const mongo = await connect();
   const {posts, pages, blogs} = modelFactory(mongo, ['posts', 'pages', 'blogs']);
   const blog = await blogs.findOne({subdomain}, 'mainUrl url', {lean: true});
