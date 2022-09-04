@@ -11,7 +11,13 @@ const Home = dynamic(() => import('@/components/index'), {
 
 export async function getServerSideProps({query: {subdomain, paths}}) {
   const pathType = await getPathType(subdomain, paths);
-
+  if (pathType === 'no-blog')
+    return {
+      redirect: {
+        permanent: true,
+        destination: 'https://lettercms.vercel.app'
+      }
+    }
   if (pathType === 'main')
     return await getMain(subdomain);
   else if (pathType === 'post')
