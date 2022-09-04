@@ -8,6 +8,6 @@ Sentry.init({
   dsn: SENTRY_DSN || env.SENTRY_DSN,
   tracesSampleRate: 0.25,
   enabled: !isDev,
-  debug: isDev,
+  debug: false,
   environment: 'client'
 });
