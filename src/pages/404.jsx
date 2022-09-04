@@ -1,5 +1,7 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import connect from '@/lib/mongo/connect';
+import modelFactory from '@lettercms/models';
 
 const NotFound = () => (
   <div>
@@ -36,5 +38,20 @@ const NotFound = () => (
     </style>
   </div>
 );
+
+export async function getServerSideProps({req, res}) {
+  const hostname = req.headers.host || req.host;
+  const subdomain = process.env.NODE_ENV === 'production'  ? hostname.replace('.lettercms.vercel.app', '') : hostname.replace('.localhost:3002', '');
+  const mongo = await connect();
+
+  const {blogs} = modelFactory(mongo, ['blogs']);
+  const blogData = await blogs.findOne({subdomain}, 'mainUrl', {lean: true});
+
+  return {
+    props: {
+      base: blogData.mainUrl
+    }
+  }
+}
 
 export default NotFound;
