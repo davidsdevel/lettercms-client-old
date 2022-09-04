@@ -90,7 +90,7 @@ export async function getPost(subdomain, paths, userID) {
     subdomain,
     url
   },
-  'images url content title tags postStatus updated category description published author thumbnail',
+  'images subdomain url content title tags postStatus updated category description published author thumbnail',
   {
     lean: true,
     populate: {

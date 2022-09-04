@@ -2,8 +2,8 @@ import React from 'react';
 import store from '../../store';
 import { showModal } from '../../store/actions';
 
-const Share = ({ url, title, isSubscribe }) => {
-  const encodedURL = encodeURI(`https://lettercms-client-davidsdevel.vercel.app${url}`);
+const Share = ({ subdomain, url, title, isSubscribe }) => {
+  const encodedURL = encodeURI(`https://${subdomain}.lettercms.vercel.app${url}`);
 
   return (
     <div id="share-container">
@@ -18,7 +18,7 @@ const Share = ({ url, title, isSubscribe }) => {
           <img src="/assets/facebook.svg" />
         </a>
         <a
-          href={`https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Flettercms-client-davidsdevel.vercel.app&ref_src=twsrc%5Etfw&text=${encodeURI(`Esta entrada me gusto, puede que a ti también te interese.${title}`)}&tw_p=tweetbutton&url=${encodedURL}&via=davidsdevel`}
+          href={`https://twitter.com/intent/tweet?original_referer=https%3A%2F%2F${subdomain}.lettercms.vercel.app&ref_src=twsrc%5Etfw&text=${encodeURI(`Esta entrada me gusto, puede que a ti también te interese.${title}`)}&tw_p=tweetbutton&url=${encodedURL}&via=davidsdevel`}
           target="_blank" rel="noreferrer"
         >
           <img src="/assets/twitter.svg" />

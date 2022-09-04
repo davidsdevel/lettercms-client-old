@@ -19,7 +19,9 @@ import {useEffect} from 'react';
         published = defaultDate,
         category,
         author,
+        subdomain,
         thumbnail,
+        fullUrl,
         url = ''
       },
       status,
@@ -103,7 +105,7 @@ import {useEffect} from 'react';
             </li>
           ))}
         </ul>
-        <Share url={url} title={title} isSubscribe={isSubscribe} />
+        <Share subdomain={subdomain} url={fullUrl} title={title} isSubscribe={isSubscribe} />
         <About {...author}/>
         <h4>Comentarios</h4>
         <div
