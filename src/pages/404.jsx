@@ -1,7 +1,5 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import connect from '@/lib/mongo/connect';
-import modelFactory from '@lettercms/models';
 import {useEffect, useState} from 'react';
 
 const NotFound = ({base}) => {
