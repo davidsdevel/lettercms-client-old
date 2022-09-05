@@ -20,8 +20,19 @@ const CustomApp = ({pageProps, Component}) => {
 
       sdk.setAccessToken(pageProps.accessToken);
       
-      setView();
+      if (!pageProps.notFound) {
+        setView();
 
+        const UID = Cookies.get('userID');
+        if (!UID) {
+          sdk.createRequest('/user','POST', {
+            device: /Android|iPhone|iPad/.test(navigator.userAgent) ? 'mobile' : 'desktop'
+          }).then(({id}) => {
+            Cookies.set('userID', id);
+          });
+        }
+
+      }
       if (!pageProps.notFound && !tracingInit) {
         sdk.stats.startTrace();
         setTracing(true);
@@ -46,15 +57,6 @@ const CustomApp = ({pageProps, Component}) => {
   }
 
   useEffect(() => {
-    const UID = Cookies.get('userID');
-    if (!UID && pageProps.accessToken) {
-      sdk.createRequest('/user','POST', {
-        device: /Android|iPhone|iPad/.test(navigator.userAgent) ? 'mobile' : 'desktop'
-      }).then(({id}) => {
-        Cookies.set('userID', id);
-      });
-    }
-
     const html = document.getElementsByTagName('html')[0];
 
     router.events.on('routeChangeStart', () => {
