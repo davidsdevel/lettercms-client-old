@@ -15,8 +15,7 @@ export function getStaticPaths() {
     fallback:true
   }
 }
-export async function getStaticProps({req, params: {subdomain, paths}}) {
-  const userID = req.cookies.userID;
+export async function getStaticProps({params: {subdomain, paths}}) {
   const pathType = await getPathType(subdomain, paths);
   if (pathType === 'no-blog')
     return {
@@ -26,22 +25,19 @@ export async function getStaticProps({req, params: {subdomain, paths}}) {
       }
     }
 
-  let data = null
+  let props = null
   
   if (pathType === 'main')
-    data = await getMain(subdomain);
+    props = await getMain(subdomain);
   if (pathType === 'post')
-    data = await getPost(subdomain, paths);
+    props = await getPost(subdomain, paths);
   if (pathType === 'not-found')
     return {
       notFound: true
     };
 
   return {
-    props: {
-      ...data,
-      userID
-    }
+    props
   }
 }
 

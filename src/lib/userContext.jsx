@@ -65,23 +65,30 @@ export function useRecommendations(url) {
   return recommendation ?? {status:'loading'};
 }
 
-export function UserProvider({children, userID}) {
+export function UserProvider({children}) {
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [userID, setUserID] = useState(null);
 
   useEffect(() => {
-    if (userID)
+    const _userID = Cookie.get('userID')
+    if (_userID) {
+      setUserID(_userID);
+      
       sdk.createRequest(`/user/${userID}`)
         .then(setUser);
+    }
     else
-      setUser({_id: 'no-user'});
+      setUser({status: 'no-user'});
 
-  }, [userID]);
+  }, []);
 
   let value = {status: 'loading'}
 
   if (user?._id && userID)
     value = {user}
+  else if (user?.status === 'no-user')
+    value = {user}; 
   else
     value = {status: 'error'}
 
