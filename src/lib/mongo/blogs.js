@@ -9,7 +9,7 @@ export async function getPathType(subdomain, paths = []) {
   const blog = await blogs.findOne({subdomain}, 'mainUrl url', {lean: true});
 
   if (!blog)
-    return 'not-blog';
+    return 'no-blog';
 
   const {mainUrl, url: urlID} = blog;
   if (paths?.length === 0) {
