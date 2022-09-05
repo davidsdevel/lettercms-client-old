@@ -15,7 +15,7 @@ export function getStaticPaths() {
     fallback:true
   }
 }
-export async function getStaticProps({req, query: {subdomain, paths}}) {
+export async function getStaticProps({req, params: {subdomain, paths}}) {
   const userID = req.cookies.userID;
   const pathType = await getPathType(subdomain, paths);
   if (pathType === 'no-blog')
