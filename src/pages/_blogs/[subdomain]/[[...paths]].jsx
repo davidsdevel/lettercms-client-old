@@ -9,7 +9,7 @@ const Home = dynamic(() => import('@/components/index'), {
   ssr: true
 });
 
-export async function getStaticPaths() {
+export function getStaticPaths() {
   return {
     paths: [],
     fallback:true
