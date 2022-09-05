@@ -39,15 +39,15 @@ export async function getStaticProps({params: {subdomain, paths}}) {
       return {
         notFound: true
       };
+
+    return {
+      props: {
+        pathType,
+        ...props
+      }
+    }
   } catch(err) {
     captureException(err);
-  }
-
-  return {
-    props: {
-      pathType,
-      ...props
-    }
   }
 }
 
