@@ -80,10 +80,10 @@ export function UserProvider({children, userID}) {
 
   let value = {status: 'loading'}
 
-  if (!user._id)
-    value = {status: 'error'}
-  else
+  if (user?._id && userID)
     value = {user}
+  else
+    value = {status: 'error'}
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }
