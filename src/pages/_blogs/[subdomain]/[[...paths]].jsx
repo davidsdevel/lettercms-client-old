@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
-import {getPost, getMain} from '@/lib/page';
-import {getPathType} from '@/lib/mongo/blogs';
+import {getPathType, getBlog} from '@/lib/mongo/blogs';
+import {getPost} from '@/lib/mongo/posts';
 
 const Post = dynamic(() => import('@/components/post'), {
   ssr: true
@@ -17,6 +17,7 @@ export function getStaticPaths() {
 }
 export async function getStaticProps({params: {subdomain, paths}}) {
   const pathType = await getPathType(subdomain, paths);
+
   if (pathType === 'no-blog')
     return {
       redirect: {
@@ -28,9 +29,9 @@ export async function getStaticProps({params: {subdomain, paths}}) {
   let props = null
   
   if (pathType === 'main')
-    props = await getMain(subdomain);
+    props = await getBlog(subdomain);
   if (pathType === 'post')
-    props = await getPost(subdomain, paths);
+    props = await getPost(subdomain, post);
   if (pathType === 'not-found')
     return {
       notFound: true

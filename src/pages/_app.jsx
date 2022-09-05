@@ -92,7 +92,7 @@ const CustomApp = ({pageProps, Component}) => {
       && <Load />
     }
     <Nav subdomain={router.query.subdomain} main={pageProps.mainUrl}/>
-    <UserProvider userID={pageProps.userID}>
+    <UserProvider>
       <Component {...pageProps} />
     </UserProvider>
     <Footer title={pageProps.blog?.title}/>
