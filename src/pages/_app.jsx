@@ -46,14 +46,14 @@ const CustomApp = ({pageProps, Component}) => {
   }
 
   useEffect(() => {
-    /*const UID = Cookies.get('userID');
+    const UID = Cookies.get('userID');
     if (!UID) {
       sdk.createRequest('/user','POST', {
         device: /Android|iPhone|iPad/.test(navigator.userAgent) ? 'mobile' : 'desktop'
       }).then(({id}) => {
         Cookies.set('userID', id);
       });
-    }*/
+    }
 
     const html = document.getElementsByTagName('html')[0];
 
