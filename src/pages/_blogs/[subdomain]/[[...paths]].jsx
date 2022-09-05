@@ -9,7 +9,7 @@ const Home = dynamic(() => import('@/components/index'), {
   ssr: true
 });
 
-export async function getServerSideProps({req, query: {subdomain, paths}}) {
+export async function getStaticProps({req, query: {subdomain, paths}}) {
   const userID = req.cookies.userID;
   const pathType = await getPathType(subdomain, paths);
   if (pathType === 'no-blog')
@@ -32,17 +32,21 @@ export async function getServerSideProps({req, query: {subdomain, paths}}) {
     };
 
   return {
-    ...data,
-    userID
+    props: {
+      ...data,
+      userID
+    },
+    fallback: true
   }
 }
 
 export default function PageWraper(props) { 
   let UI = null;
+
   if (props.pathType === 'main')
     UI = <Home {...props}/>;
   if (props.pathType === 'post')
     UI = <Post {...props}/>;
 
-  return UI
+  return UI;
 }
