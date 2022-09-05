@@ -9,6 +9,12 @@ const Home = dynamic(() => import('@/components/index'), {
   ssr: true
 });
 
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback:true
+  }
+}
 export async function getStaticProps({req, query: {subdomain, paths}}) {
   const userID = req.cookies.userID;
   const pathType = await getPathType(subdomain, paths);
@@ -35,8 +41,7 @@ export async function getStaticProps({req, query: {subdomain, paths}}) {
     props: {
       ...data,
       userID
-    },
-    fallback: true
+    }
   }
 }
 
