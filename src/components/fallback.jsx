@@ -9,7 +9,7 @@ export default function Fallback() {
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
-    <Image layout='responsive' width={300} src='/images/davidsdevel-rombo.png'/>
+    <span>Cargando</span>
     <style jsx>{`
       #fallback {
         position: absolute;
