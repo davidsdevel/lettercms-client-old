@@ -47,7 +47,7 @@ const CustomApp = ({pageProps, Component}) => {
 
   useEffect(() => {
     const UID = Cookies.get('userID');
-    if (!UID) {
+    if (!UID && pageProps.accessToken) {
       sdk.createRequest('/user','POST', {
         device: /Android|iPhone|iPad/.test(navigator.userAgent) ? 'mobile' : 'desktop'
       }).then(({id}) => {
