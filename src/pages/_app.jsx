@@ -9,6 +9,7 @@ import Load from '@/components/loadBar';
 import Nav from '@/components/nav';
 import Footer from '@/components/index/footer';
 import '@/styles/global.css';
+import Fallback from '@/components/fallback';
 
 const CustomApp = ({pageProps, Component}) => {
   const [showLoad, setLoad] = useState(false);
@@ -74,7 +75,7 @@ const CustomApp = ({pageProps, Component}) => {
   }, []);
 
   if (router.isFallback)
-    return <div>Loading</div>;
+    return <Fallback/>;
   
   return <div>
     <Head>
