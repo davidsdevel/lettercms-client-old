@@ -14,6 +14,7 @@ const cfg = {
   },
   sentry: {
     hideSourceMaps: true,
+    widenClientFileUpload: true
   },
    async headers() {
     return [

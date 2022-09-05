@@ -16,7 +16,7 @@ const CustomApp = ({pageProps, Component}) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (pageProps.accessToken) {
+    if (pageProps.accessToken && !router.isFallback) {
 
       sdk.setAccessToken(pageProps.accessToken);
       
@@ -38,7 +38,7 @@ const CustomApp = ({pageProps, Component}) => {
         setTracing(true);
       }
     }
-  }, [pageProps.accessToken]);
+  }, [pageProps.accessToken, router.isFallback]);
 
   function setView() {
     if (!pageProps.accessToken || router.preview || pageProps.notFound)
