@@ -31,7 +31,7 @@ export async function getStaticProps({params: {subdomain, paths}}) {
   if (pathType === 'main')
     props = await getBlog(subdomain);
   if (pathType === 'post')
-    props = await getPost(subdomain, post);
+    props = await getPost(subdomain, paths);
   if (pathType === 'not-found')
     return {
       notFound: true
