@@ -197,10 +197,9 @@ async function getSimilars(model, {
   }
   
   if (similars.length === 0)
-    similars = await model.find({_id: {$ne: actual}, subdomain, postStatus: 'published'}, 'title description thumbnail views comments', {lean: true, sort: {published: -1}, limit: 2});
+    similars = await model.find({_id: {$ne: actual}, subdomain, postStatus: 'published'}, 'title description thumbnail views comments url', {lean: true, sort: {published: -1}, limit: 2});
   else if (similars.length === 1)
-    similars[1] = await model.findOne({_id: {$ne: actual}, subdomain, postStatus: 'published'}, 'title description thumbnail views comments', {lean: true, sort: {published: -1}});   
-  
+    similars[1] = await model.findOne({_id: {$ne: actual}, subdomain, postStatus: 'published'}, 'title description thumbnail views comments url', {lean: true, sort: {published: -1}});   
 
   return Promise.resolve(similars);
 }
@@ -221,7 +220,7 @@ async function getRecommended(model, userID, {
     , {
       populate: {
         path: 'post',
-        select: 'title description thumbnail views comments'
+        select: 'title description thumbnail views comments url'
       },
       sort: {
         viewed: 1,
