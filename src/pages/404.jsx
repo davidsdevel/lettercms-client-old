@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
 
-const NotFound = ({base}) => {
+const NotFound = () => {
   const [main, setMain] = useState('/');
 
   useEffect(() => {

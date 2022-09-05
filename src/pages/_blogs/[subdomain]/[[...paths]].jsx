@@ -1,6 +1,8 @@
 import dynamic from 'next/dynamic';
 import {getPathType, getBlog} from '@/lib/mongo/blogs';
 import {getPost} from '@/lib/mongo/posts';
+import {captureException} from '@sentry/nextjs';
+
 
 const Post = dynamic(() => import('@/components/post'), {
   ssr: true
@@ -16,26 +18,30 @@ export function getStaticPaths() {
   }
 }
 export async function getStaticProps({params: {subdomain, paths}}) {
-  const pathType = await getPathType(subdomain, paths);
+  try {
+    const pathType = await getPathType(subdomain, paths);
 
-  if (pathType === 'no-blog')
-    return {
-      redirect: {
-        permanent: true,
-        destination: 'https://lettercms.vercel.app'
+    if (pathType === 'no-blog')
+      return {
+        redirect: {
+          permanent: true,
+          destination: 'https://lettercms.vercel.app'
+        }
       }
-    }
 
-  let props = null
-  
-  if (pathType === 'main')
-    props = await getBlog(subdomain);
-  if (pathType === 'post')
-    props = await getPost(subdomain, paths);
-  if (pathType === 'not-found')
-    return {
-      notFound: true
-    };
+    let props = null
+    
+    if (pathType === 'main')
+      props = await getBlog(subdomain);
+    if (pathType === 'post')
+      props = await getPost(subdomain, paths);
+    if (pathType === 'not-found')
+      return {
+        notFound: true
+      };
+  } catch(err) {
+    captureException(err);
+  }
 
   return {
     props: {

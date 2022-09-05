@@ -1,11 +1,10 @@
-import * as Sentry from '@sentry/nextjs';
+import {captureUnderscoreErrorException, captureException, flush} from '@sentry/nextjs';
 import NextErrorComponent from 'next/error';
 import Head from 'next/head';
 import Link from 'next/link';
 
 const CustomErrorComponent = props => {
-  Sentry.captureUnderscoreErrorException(props);
-
+  captureUnderscoreErrorException(props);
   return <div>
     <Head>
       <meta charSet="utf-8" />
@@ -46,9 +45,9 @@ CustomErrorComponent.getInitialProps = async contextData => {
   errorInitialProps.hasGetInitialPropsRun = true;
 
   if (contextData.err) {
-    Sentry.captureException(contextData.err);
+    captureException(contextData.err);
 
-    await Sentry.flush(2000);
+    await flush(2000);
 
     return errorInitialProps;
   }
@@ -56,7 +55,7 @@ CustomErrorComponent.getInitialProps = async contextData => {
   Sentry.captureException(
     new Error(`_error.js getInitialProps missing data at path: ${contextData.asPath}`)
   );
-  await Sentry.flush(2000);
+  await flush(2000);
 
   return errorInitialProps;
 };
