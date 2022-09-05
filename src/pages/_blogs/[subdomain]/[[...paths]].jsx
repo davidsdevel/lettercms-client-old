@@ -38,7 +38,10 @@ export async function getStaticProps({params: {subdomain, paths}}) {
     };
 
   return {
-    props
+    props: {
+      pathType,
+      ...props
+    }
   }
 }
 
