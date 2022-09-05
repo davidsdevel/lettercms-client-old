@@ -65,14 +65,14 @@ export function useRecommendations(url) {
   return recommendation ?? {status:'loading'};
 }
 
-export function UserProvider({children}) {
+export function UserProvider({children, ready}) {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [userID, setUserID] = useState(null);
 
   useEffect(() => {
     const _userID = Cookie.get('userID')
-    if (_userID) {
+    if (_userID && ready) {
       setUserID(_userID);
       
       sdk.createRequest(`/user/${userID}`)
@@ -81,7 +81,7 @@ export function UserProvider({children}) {
     else
       setUser({status: 'no-user'});
 
-  }, []);
+  }, [ready]);
 
   let value = {status: 'loading'}
 

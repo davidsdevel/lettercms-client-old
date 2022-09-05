@@ -92,7 +92,7 @@ const CustomApp = ({pageProps, Component}) => {
       && <Load />
     }
     <Nav subdomain={router.query.subdomain} main={pageProps.mainUrl}/>
-    <UserProvider>
+    <UserProvider ready={pageProps.accessToken && !router.isFallback}>
       <Component {...pageProps} />
     </UserProvider>
     <Footer title={pageProps.blog?.title}/>
