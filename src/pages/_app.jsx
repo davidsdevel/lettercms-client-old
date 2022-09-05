@@ -3,6 +3,7 @@ import {useRouter} from 'next/router';
 import Head from 'next/head';
 import sdk from '@lettercms/sdk';
 import Cookies from 'js-cookie';
+import {UserProvider} from '@/lib/userContext';
 import Facebook from '@/lib/client/FacebookSDK';
 import Load from '@/components/loadBar';
 import Nav from '@/components/nav';
@@ -89,7 +90,9 @@ const CustomApp = ({pageProps, Component}) => {
       && <Load />
     }
     <Nav subdomain={router.query.subdomain} main={pageProps.mainUrl}/>
-    <Component {...pageProps} />
+    <UserProvider userID={pageProps.userID}>
+      <Component {...pageProps} />
+    </UserProvider>
     <Footer title={pageProps.blog?.title}/>
   </div>;
 };

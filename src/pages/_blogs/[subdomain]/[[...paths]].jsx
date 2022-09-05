@@ -9,7 +9,8 @@ const Home = dynamic(() => import('@/components/index'), {
   ssr: true
 });
 
-export async function getServerSideProps({query: {subdomain, paths}}) {
+export async function getServerSideProps({req, query: {subdomain, paths}}) {
+  const userID = req.cookies.userID;
   const pathType = await getPathType(subdomain, paths);
   if (pathType === 'no-blog')
     return {
@@ -18,14 +19,22 @@ export async function getServerSideProps({query: {subdomain, paths}}) {
         destination: 'https://lettercms.vercel.app'
       }
     }
+
+  let data = null
+  
   if (pathType === 'main')
-    return await getMain(subdomain);
-  else if (pathType === 'post')
-    return await getPost(subdomain, paths);
-  else
+    data = await getMain(subdomain);
+  if (pathType === 'post')
+    data = await getPost(subdomain, paths);
+  if (pathType === 'not-found')
     return {
       notFound: true
     };
+
+  return {
+    ...data,
+    userID
+  }
 }
 
 export default function PageWraper(props) { 

@@ -2,6 +2,8 @@ import Head from '@/components/head';
 import Landing from '@/components/index/landing';
 import Card from '@/components/index/card';
 import dynamic from 'next/dynamic';
+import {usePosts} from '@/lib/userContext';
+import {useRouter} from 'next/router';
 
 const Pagination = dynamic(() => import('@/components/index/pagination'));
 const Recommended = dynamic(() => import('@/components/index/recommended'));
@@ -32,6 +34,13 @@ const Posts = ({posts}) => {
 
 const Home = ({posts, blog}) => {
 
+  const router = useRouter();
+  const customPosts = usePosts(router.query.page);
+
+  let _posts = customPosts.posts || posts;
+
+  const showOverlay = customPosts.status !== 'no-user' && customPosts.status === 'loading';
+
   return <div>
     <Head title={blog.title} description={blog.description} />
     <Landing isSubscribe={false} description={blog.description} />
@@ -41,8 +50,12 @@ const Home = ({posts, blog}) => {
       && <h2>{blogData.description}</h2>
     */}
     {
-      posts.length > 0
-        ? <Posts posts={posts}/>
+      showOverlay &&
+      <div id='overlay'/> 
+    }
+    {
+      _posts.length > 0
+        ? <Posts posts={_posts}/>
         : <div id="entries">
             <span>No Hay Entradas</span>
           </div>
