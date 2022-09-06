@@ -107,39 +107,3 @@ export async function getBlog(subdomain, page) {
     accessToken: jwt.sign({subdomain}, process.env.JWT_AUTH)
   });
 }
-
-export async function getRecommended(subdomain, userID) {
-  const mongo = await connect();
-
-  const {blogs, users: {Ratings}} = modelFactory(mongo, ['blogs', 'ratings', 'posts']);
-
-  const blog = await blogs.findOne({subdomain}, 'categories description title url', {lean: true});
-
-  if (!blog)
-    return Promise.resolve({
-      notFound: true
-    });
-
-  const postsData = await Ratings.find({userID}, 'post', {
-    lean: true,
-    populate: {
-      path: 'post',
-      select: 'description title images url thumbnail comments category'
-    },
-    sort: {
-      viewed: 1,
-      rating: -1
-    }
-  });
-
-  if (postsData.lenght === 0)
-    return Promise.resolve({
-      notFound: true
-    });
-
-  return Promise.resolve({
-    posts: postsData.map(({post}) => post),
-    blog,
-    accessToken: jwt.sign({subdomain}, process.env.JWT_AUTH)
-  });
-}

@@ -2,7 +2,6 @@ import connect from './connect';
 import accountSchema from '@lettercms/models/accounts/schema/account';
 import postSchema from '@lettercms/models/posts/schema/posts';
 import blogSchema from '@lettercms/models/blogs/schema/blogs';
-import ratingSchema from '@lettercms/models/users/schema/ratings';
 import jwt from 'jsonwebtoken';
 
 export async function getPreviewPost(id, subdomain) {
@@ -63,7 +62,6 @@ export async function getPost(subdomain, paths, userID) {
   mongo.model('BlogAccount', accountSchema);
   const blogs = mongo.model('Blogs', blogSchema);
   const posts = mongo.model('BlogPosts', postSchema);
-  const Ratings = mongo.model('BlogRatings', ratingSchema);
 
   const blogData = await blogs.findOne({subdomain}, 'title url mainUrl', {lean: true});
 
@@ -104,24 +102,11 @@ export async function getPost(subdomain, paths, userID) {
   const similars = await getSimilars(posts, {
     subdomain,
     tags: hasTags && postData.tags,
-    actual: postData._id,
-    hasRecommend: !!userID
+    actual: postData._id
   });
 
   const similar = similars[0];
-  let recommended;
-
-  if (!userID) {
-    recommended = similars[1];
-    if (!recommended)
-      recommended = similars[0];
-  }
-  else
-    recommended = await getRecommended(Ratings, userID, {
-      subdomain,
-      actual: postData._id,
-      similar: similar._id
-    });
+  const recommended = similars[1];
 
   postData.fullUrl = generateFullUrl({
     ...postData,
@@ -164,8 +149,7 @@ export async function getPost(subdomain, paths, userID) {
 async function getSimilars(model, {
   subdomain,
   tags,
-  actual,
-  hasRecommend
+  actual
 }) {
 
   let similars = [];
@@ -202,34 +186,6 @@ async function getSimilars(model, {
     similars[1] = await model.findOne({_id: {$ne: actual}, subdomain, postStatus: 'published'}, 'title description thumbnail views comments url', {lean: true, sort: {published: -1}});   
 
   return Promise.resolve(similars);
-}
-
-async function getRecommended(model, userID, {
-  subdomain,
-  actual,
-  similar
-}) {
-  const rated = await model.findOne({
-      subdomain,
-      $and: [
-        {post: {$ne: actual}},
-        {post: {$ne: similar}}
-      ]
-    },
-    'post'
-    , {
-      populate: {
-        path: 'post',
-        select: 'title description thumbnail views comments url'
-      },
-      sort: {
-        viewed: 1,
-        rating: -1
-      },
-      lean: true
-    });
-
-  return Promise.resolve(rated.post);
 }
 
 async function validyUrl(subdomain, paths) {
